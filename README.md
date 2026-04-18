@@ -1,2 +1,2 @@
 Diagrama de clases 
-https://app.diagrams.net/#G1RImIQTYdjOFtc8cs9wpfYzWM6lE2Y1lF#%7B%22pageId%22%3A%22nWggxtCHxEFr8woFEOdu%22%7D
+https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1&dark=auto#G1bb90fcDe6EXzuBBoikmzYBW58cTYz03C
