@@ -7,7 +7,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(Desafio2 main.cpp
     selecciones.h selecciones.cpp
-    partido.h partido.cpp)
+    partido.h partido.cpp
+    torneo.h torneo.cpp
+    jugadores.h jugadores.cpp
+    statspartido.h statspartido.cpp
+    statsteam.h statsteam.cpp
+    grupos.h grupos.cpp
+    gestorarchivos.h gestorarchivos.cpp)
 
 include(GNUInstallDirs)
 install(TARGETS Desafio2
