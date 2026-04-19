@@ -17,6 +17,7 @@ public:
     void showplayers();
     void showstats();
     bool cargarstats();
+    bool actualizarstats();
 
     ~Selecciones(); //destructor
 };

@@ -1,3 +1,6 @@
 #include "gestorarchivos.h"
 
-GestorArchivos::GestorArchivos() {}
+GestorArchivos::GestorArchivos(string rutaseleccion,string rutajugadores) {
+    rutas=rutaseleccion;
+    rutaplayers=rutajugadores;
+}

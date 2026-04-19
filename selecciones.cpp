@@ -11,7 +11,15 @@ Selecciones::Selecciones(string nombre,string tecnico,int ranking) {
 }
 
 
+
+
 bool Selecciones::cargarstats(){}
+bool Selecciones::actualizarstats(){}
+
+
+
+
+
 
 
 void Selecciones::showplayers(){
