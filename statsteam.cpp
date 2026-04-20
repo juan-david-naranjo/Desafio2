@@ -30,7 +30,17 @@ void statsteam::lose(){
 void statsteam::equal(){
     equalgames++;
 }
+//+++++++++++++++++++++++++++++++++++++++ |GETTERS| +++++++++++++++++++++++++++++++
+unsigned int statsteam::getfavorGoals(){return favorgoals;}
+unsigned int statsteam::getcounterGoals(){return countergoals;}
+unsigned int statsteam::getWins(){return wingames;}
+unsigned int statsteam::getLoses(){return losegames;}
+unsigned int statsteam::getEqual(){return equalgames;}
 
+
+
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void statsteam::showstats(){
     cout<<"Goles a favor: "<<favorgoals<<endl;
     cout<<"Goles en contra: "<<countergoals<<endl;

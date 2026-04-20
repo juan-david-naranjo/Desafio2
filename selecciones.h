@@ -18,6 +18,14 @@ public:
     void showstats();
     bool cargarstats();
     bool actualizarstats();
+    void onceTitular(jugadores *headlines[11]);
+
+    //getters
+    jugadores** convocados();
+    string getname();
+    string getmanager();
+    unsigned int favorGoals();
+    unsigned int counterGoals();
 
     ~Selecciones(); //destructor
 };

@@ -23,6 +23,14 @@ public:
     void goal();
     void countergoal();
     void showstats();
+    unsigned int getfavorGoals();
+    unsigned int getcounterGoals();
+    unsigned int getWins();
+    unsigned int getLoses();
+    unsigned int getEqual();
+
+
+
 
 
 };
