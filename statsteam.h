@@ -1,38 +1,49 @@
 #ifndef STATSTEAM_H
 #define STATSTEAM_H
 #include <iostream>
-#include <string>
-
 using namespace std;
 
-
-class statsteam
-{
-    unsigned int favorgoals;
-    unsigned int countergoals;
-    unsigned int wingames;
-    unsigned int losegames;
-    unsigned int equalgames;
+class statsteam {
+    unsigned int favorGoals;
+    unsigned int counterGoals;
+    unsigned int wins;
+    unsigned int draws;
+    unsigned int losses;
+    unsigned int yellowCards;
+    unsigned int redCards;
+    unsigned int faults;
 
 public:
     statsteam();
-    statsteam(unsigned int favor,unsigned int contra,unsigned int win,unsigned int loses,unsigned int equal);
-    void win();
-    void lose();
-    void equal();
-    void goal();
-    void countergoal();
-    void showstats();
-    unsigned int getfavorGoals();
-    unsigned int getcounterGoals();
-    unsigned int getWins();
-    unsigned int getLoses();
-    unsigned int getEqual();
+    statsteam(unsigned int gf, unsigned int gc, unsigned int pg,
+              unsigned int pe, unsigned int pp);
 
+    // Actualiza sumando los resultados de un partido
+    void update(unsigned int gf, unsigned int gc, bool win, bool draw);
 
+    // Getters
+    unsigned int getfavorGoals() const;
+    unsigned int getcounterGoals() const;
+    unsigned int getWins()        const;
+    unsigned int getDraws()       const;
+    unsigned int getLosses()      const;
+    unsigned int getYellowCards() const;
+    unsigned int getRedCards()    const;
+    unsigned int getFaults()      const;
 
+    // Setters (usados por GestorArchivos al cargar el CSV)
+    void setfavorGoals(unsigned int v);
+    void setcounterGoals(unsigned int v);
+    void setWins(unsigned int v);
+    void setDraws(unsigned int v);
+    void setLosses(unsigned int v);
+    void addYellowCard();
+    void addRedCard();
+    void addFault();
 
+    void showstats() const;
 
+    ~statsteam();
 };
 
 #endif // STATSTEAM_H

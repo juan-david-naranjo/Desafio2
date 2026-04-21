@@ -2,32 +2,35 @@
 #define STATSPARTIDO_H
 #include "jugadores.h"
 
-using namespace std;
-
-
-class statspartido
-{
-    unsigned int goals1=0;
-    unsigned int goals2=0;
-    float posesion1=0;
-    float posesion2=0;
-    jugadores *convocados1[11];
-    jugadores *convocados2[11];
-    unsigned short int cont1=0;
-    unsigned short int cont2=0;
+class statspartido {
+    unsigned int golesE1;
+    unsigned int golesE2;
+    float posesionE1;   // porcentaje 0-100
+    float posesionE2;
+    jugadores* titularesE1[11];
+    jugadores* titularesE2[11];
 
 public:
     statspartido();
-    void convocados(jugadores** headline,unsigned int team);
-    void addplayer(unsigned short int team,jugadores *jugador);   //funcion para agregar jugadores
 
+    // Asigna los 11 convocados de un equipo (equipo: 1 o 2)
+    void convocados(jugadores** plantel, int equipo);
 
+    // Registra un gol para el equipo indicado
+    void addGol(int equipo);
 
-    //++++++++++++++ |GETTERS|+++++++++++++++
-    unsigned int getgol(unsigned short int ocpion);
-    float getpos(unsigned short int ocpion);
-    void showconvocados();
-    jugadores *Getplayer(unsigned int team,unsigned int indice);
+    // Calcula posesión proporcional al ranking FIFA
+    // rankE1 y rankE2: posición en ranking (menor = mejor)
+    void calcularPosesion(int rankE1, int rankE2);
+
+    // Getters
+    unsigned int getgol(int equipo)      const;
+    float        getPosesion(int equipo) const;
+    jugadores*   Getplayer(int equipo, int indice) const;
+
+    void showconvocados() const;
+
+    ~statspartido();
 };
 
 #endif // STATSPARTIDO_H
