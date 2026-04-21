@@ -25,9 +25,20 @@ class Partido
 public:
     Partido(Selecciones *team1,Selecciones *team2,string date,string hour); //constructor
     int generarGoles(double lambda);
-    void simular();
+    void simularEliminatoria();
+    void simularFaseGrupos();
+    void showstats();
+    void simular(bool esEliminatoria);
+    void FaltasPlayer(jugadores* player);
+    void tryamarilla(unsigned int amarilla,jugadores* player);
+    void simularfaltas();
+
+
+
     void oncetitular();
     void showpartido();
+    int Golesreales(short int equipo,int potencialgoles);
+    void Manejarempate(int potencial1,int potencial2);
 
 
 

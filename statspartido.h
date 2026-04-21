@@ -20,10 +20,11 @@ public:
     statspartido();
     void convocados(jugadores** headline,unsigned int team);
     void addplayer(unsigned short int team,jugadores *jugador);   //funcion para agregar jugadores
-
-
+    void Playerstats();
+    void SetPartido(bool porroga);
 
     //++++++++++++++ |GETTERS|+++++++++++++++
+
     unsigned int getgol(unsigned short int ocpion);
     float getpos(unsigned short int ocpion);
     void showconvocados();

@@ -17,7 +17,10 @@ public:
     void showplayers();
     void showstats();
     bool cargarstats();
-    bool actualizarstats();
+    void actualizarstats(int favorgoal,int countergoals);
+    void wingame();
+    void losegame();
+    void equalgame();
     void onceTitular(jugadores *headlines[11]);
 
     //getters

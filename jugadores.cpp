@@ -34,10 +34,36 @@ void jugadores::gol(){
 }
 
 void jugadores::amarilla(){
-    yellowcard++;
+    if(yellowcard<2)yellowcard++;
+    else redcard++;
 }
 void jugadores::roja(){
     redcard++;
+}
+
+
+void jugadores::fault(){
+    faults++;
+}
+
+void jugadores::setminutos(unsigned int minutos){
+    minutes+=minutos;
+}
+
+
+void jugadores::showststats(){
+    cout<<name<<endl;
+    cout<<"Goles: "<<goals<<endl;
+    cout<<"faltas: "<<faults<<endl;
+    cout<<"minutos jugados: "<<minutes<<endl;
+    cout<<"amarillas: "<<yellowcard<<endl;
+    cout<<"Rojas: "<<redcard;
+
+}
+
+//++++++++++++++++++++++++++++++++++    |GETTERS|+++++++++++++++++++++++++
+unsigned int jugadores:: getamarilla(){
+    return yellowcard;
 }
 
 jugadores::~jugadores(){}

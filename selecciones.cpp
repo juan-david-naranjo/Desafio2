@@ -14,8 +14,26 @@ Selecciones::Selecciones(string nombre,string tecnico,int ranking) {
 
 
 bool Selecciones::cargarstats(){}
-bool Selecciones::actualizarstats(){}
 
+
+
+void Selecciones::actualizarstats(int favorgoal,int countergoals){
+    stats.goal(favorgoal);
+    stats.countergoal(countergoals);
+
+}
+
+void Selecciones::wingame(){
+    stats.win();
+}
+
+void Selecciones::losegame(){
+    stats.lose();
+}
+
+void Selecciones::equalgame(){
+    stats.equal();
+}
 
 void Selecciones::onceTitular(jugadores* headlines[11]){
 
@@ -42,6 +60,11 @@ unsigned int Selecciones:: favorGoals(){return stats.getfavorGoals();}
 unsigned int Selecciones:: counterGoals(){return stats.getcounterGoals();}
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
 void Selecciones::showplayers(){
     for(int i=0;i<26;i++){
         players[i]->getname();

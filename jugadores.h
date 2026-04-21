@@ -23,6 +23,10 @@ public:
     void gol();
     void amarilla();
     void roja();
+    void fault();
+    void setminutos(unsigned int minutos);
+    void showststats();
+    unsigned int getamarilla();
 
     ~jugadores();
 

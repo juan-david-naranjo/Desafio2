@@ -15,20 +15,43 @@ statsteam::statsteam(){
     equalgames=0;
 }
 
+
 void statsteam::goal(){
     favorgoals++;
 }
+
+void statsteam::goal(int gol){
+    favorgoals+=gol;
+}
+
+
 void statsteam::countergoal(){
     countergoals++;
 }
+void statsteam::countergoal(int counter){
+    countergoals+=counter;
+}
+
+
 void statsteam::win(){
     wingames++;
 }
+void statsteam::win(int gano){
+    wingames+=gano;
+}
+
 void statsteam::lose(){
     losegames++;
 }
+void statsteam::lose(int perdio){
+    losegames+=perdio;
+}
+
 void statsteam::equal(){
     equalgames++;
+}
+void statsteam::equal(int igual){
+    equalgames+=igual;
 }
 //+++++++++++++++++++++++++++++++++++++++ |GETTERS| +++++++++++++++++++++++++++++++
 unsigned int statsteam::getfavorGoals(){return favorgoals;}

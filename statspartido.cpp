@@ -55,8 +55,31 @@ jugadores* statspartido::Getplayer(unsigned int team,unsigned int indice){
     }
 }
 
+void statspartido::Playerstats(){
+    for(unsigned short int i=0;i<11;i++){
+        convocados1[i]->showststats();
+    }
+}
+void statspartido::SetPartido(bool porroga){
+    switch (porroga){
+    case true:
+            for(unsigned short int i=0;i<11;i++){
+                convocados1[i]->setminutos(120);
+                convocados2[i]->setminutos(120);
+            }
+        return;
+    case false:
+            for(unsigned short int i=0;i<11;i++){
+                convocados1[i]->setminutos(90);
+                convocados2[i]->setminutos(90);
+            }
+        return;
+    default:
+        return;
+    }
 
 
+}
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void statspartido::showconvocados(){
