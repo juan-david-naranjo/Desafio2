@@ -26,7 +26,14 @@ public:
     void fault();
     void setminutos(unsigned int minutos);
     void showststats();
+    // Getters para GestorArchivos
     unsigned int getamarilla();
+    unsigned int getShirt()       const;
+    unsigned int getGoals()       const;
+    unsigned int getMinutes()     const;
+    unsigned int getYellowCards() const;
+    unsigned int getRedCards()    const;
+    unsigned int getFaults()      const;
 
     ~jugadores();
 
