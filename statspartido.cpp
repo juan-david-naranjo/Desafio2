@@ -1,89 +1,109 @@
 #include "statspartido.h"
 
-statspartido::statspartido() {}
-
-
-void statspartido::addplayer(unsigned short int team,jugadores *jugador){
-
-    switch (team) {
-    case 1:
-        convocados1[cont1]=jugador;
-        cont1++;
-        break;
-    case 2:
-        convocados2[cont2]=jugador;
-        cont2++;
-        break;
-    default:
-        break;
-    }
-
-}
-
-void statspartido::convocados(jugadores** headline,unsigned int team){
-
-    if (headline == nullptr) return;
-
-    //headline 1 es el primer elemento de el arreglo con los onces convocados
-    for(unsigned short int i=0;i<11;i++){
-        if(team==1)convocados1[i]=*(headline+i);
-        else convocados2[i]=*(headline+i);
+statspartido::statspartido() {
+    golesE1   = 0;
+    golesE2   = 0;
+    posesionE1 = 50.0f;
+    posesionE2 = 50.0f;
+    for (int i = 0; i < 11; i++) {
+        titularesE1[i] = nullptr;
+        titularesE2[i] = nullptr;
     }
 }
 
+void statspartido::convocados(jugadores** plantel, int equipo) {
+    // Elige 11 aleatoriamente de los 26 del plantel
+    // Usamos Fisher-Yates parcial sobre índices
+    int indices[26];
+    for (int i = 0; i < 26; i++) indices[i] = i;
 
-//+++++++++++++++++++++++++++++ |GETTERS|++++++++++++++++++++++++++++++++++++++
-unsigned int statspartido::getgol(unsigned short opcion){
-    if(opcion==1)return goals1;
-    else return goals2;
-}
-
-float statspartido::getpos(unsigned short opcion){
-    if(opcion==1)return posesion1;
-    else return posesion2;
-}
-
-jugadores* statspartido::Getplayer(unsigned int team,unsigned int indice){
-    if(indice>11){
-        cout<<"Indice fuera de rango"<<endl;
-        return nullptr;
+    for (int i = 0; i < 11; i++) {
+        int j = i + rand() % (26 - i);
+        // intercambio
+        int tmp   = indices[i];
+        indices[i] = indices[j];
+        indices[j] = tmp;
     }
-    switch (team){
-    case 1:return convocados1[indice];
-    case 2:return convocados2[indice];
-    default: return nullptr;
+
+    if (equipo == 1) {
+        for (int i = 0; i < 11; i++)
+            titularesE1[i] = plantel[indices[i]];
+    } else {
+        for (int i = 0; i < 11; i++)
+            titularesE2[i] = plantel[indices[i]];
     }
 }
 
 void statspartido::Playerstats(){
     for(unsigned short int i=0;i<11;i++){
-        convocados1[i]->showststats();
+        titularesE1[i]->showststats();
     }
 }
 void statspartido::SetPartido(bool porroga){
     switch (porroga){
     case true:
-            for(unsigned short int i=0;i<11;i++){
-                convocados1[i]->setminutos(120);
-                convocados2[i]->setminutos(120);
-            }
+        for(unsigned short int i=0;i<11;i++){
+            titularesE1[i]->setminutos(120);
+            titularesE2[i]->setminutos(120);
+        }
         return;
     case false:
-            for(unsigned short int i=0;i<11;i++){
-                convocados1[i]->setminutos(90);
-                convocados2[i]->setminutos(90);
-            }
+        for(unsigned short int i=0;i<11;i++){
+            titularesE1[i]->setminutos(90);
+            titularesE2[i]->setminutos(90);
+        }
         return;
     default:
         return;
     }
-
-
 }
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void statspartido::showconvocados(){
-    for(unsigned int i=0;i<11;i++){
-        convocados1[i]->getname();
+unsigned int statspartido::getgol(int equipo) const {
+        return (equipo == 1) ? golesE1 : golesE2;
+
+}
+void statspartido::addGol(int equipo) {
+    if (equipo == 1) golesE1++;
+    else             golesE2++;
+}
+
+float statspartido::getPosesion(int equipo) const {
+    return (equipo == 1) ? posesionE1 : posesionE2;
+}
+
+void statspartido::showconvocados() const {
+    cout << "--- Titulares equipo 1 ---" << endl;
+    for (int i = 0; i < 11; i++) {
+        if (titularesE1[i]) titularesE1[i]->getname();
     }
+    cout << "--- Titulares equipo 2 ---" << endl;
+    for (int i = 0; i < 11; i++) {
+        if (titularesE2[i]) titularesE2[i]->getname();
+    }
+}
+
+void statspartido::calcularPosesion(int rankE1, int rankE2) {
+    // Equipo con mejor ranking (número menor) tiene más posesión.
+    // Modelo simple: posesion proporcional a (1/rank) normalizada.
+    // Se suma 1 para evitar división por cero si rank fuera 0.
+    float invE1 = 1.0f / (float)(rankE1);
+    float invE2 = 1.0f / (float)(rankE2);
+    float total = invE1 + invE2;
+    posesionE1  = (invE1 / total) * 100.0f;
+    posesionE2  = (invE2 / total) * 100.0f;
+}
+
+
+
+
+
+jugadores* statspartido::Getplayer(int equipo, int indice) const {
+    if ((indice < 0 )|| (indice > 10)) return nullptr;
+    return (equipo == 1) ? titularesE1[indice] : titularesE2[indice];
+}
+
+
+
+statspartido::~statspartido() {
+    // Los punteros son referencias a jugadores del plantel; no se eliminan aquí
 }

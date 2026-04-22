@@ -63,7 +63,9 @@ unsigned int Selecciones:: counterGoals(){return stats.getcounterGoals();}
 
 
 
-
+int Selecciones::getRanking()const{
+    return rank;
+}
 
 void Selecciones::showplayers(){
     for(int i=0;i<26;i++){

@@ -29,6 +29,7 @@ public:
     string getmanager();
     unsigned int favorGoals();
     unsigned int counterGoals();
+    int getRanking()const;
 
     ~Selecciones(); //destructor
 };
