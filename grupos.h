@@ -54,11 +54,14 @@ public:
     int           getIndE1(int p)              const;
     int           getIndE2(int p)              const;
     int           getNumPartidos()             const;
+    int           getPuntos(int equipo)            const;
 
 
     // Imprime la tabla en consola (formato texto)
     void imprimirTabla()                       const;
     void imprimirGrupo()                       const;
+
+
 
     ~Grupos();
 };

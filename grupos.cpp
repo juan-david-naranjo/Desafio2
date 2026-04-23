@@ -114,6 +114,7 @@ EntradaTabla Grupos::getEntradaTabla(int i)  const { return tabla[i];       }
 int          Grupos::getIndE1(int p)         const { return indE1[p];       }
 int          Grupos::getIndE2(int p)         const { return indE2[p];       }
 int          Grupos::getNumPartidos()        const { return numPartidos;     }
+int Grupos::getPuntos(int equipo) const{return this->getEntradaTabla(equipo).puntos;}
 
 void Grupos::imprimirTabla() const {
     cout << "GRUPO " << letra << endl;
@@ -144,6 +145,8 @@ void Grupos::imprimirGrupo() const {
     }
     cout << endl;
 }
+
+
 
 Grupos::~Grupos() {
     // Los punteros a Selecciones son propiedad de Torneo; no se eliminan aquí

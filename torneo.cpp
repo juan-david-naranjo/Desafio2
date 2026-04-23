@@ -64,8 +64,8 @@ void torneo::simularFaseGrupos() {
             unsigned int E1gol=p->getGol(1);
             unsigned int E2gol=p->getGol(2);
 
-            cout<<"GOL equipo 1 "<<E1gol<<endl;
-            cout<<"GOL equipo 2 "<<E2gol<<endl;
+            // cout<<"GOL equipo 1 "<<E1gol<<endl;
+            // cout<<"GOL equipo 2 "<<E2gol<<endl;
             grupo[gp]->registrarResultado(f,E1gol,E2gol);        //aqui deberia actualizarse la tabla
         }
         fechas->avanzarDia();
@@ -78,6 +78,60 @@ void torneo::simularFaseGrupos() {
     delete fechas;
     for(unsigned int i=0;i<12;i++){
         grupo[i]->imprimirTabla();          //visualizamos como quedo la tabla
+    }
+}
+
+void torneo::simularDieciseisavos() {
+
+
+    //asumiendo que ya las tablas quedaron organizasdas despues de la fase de grupos
+
+    // 1. Recolectar clasificados
+    Selecciones* primeros[12];
+    Selecciones* segundos[12];
+
+    //esta estructura que viene de la clase grupos, la usamos para poder calcular los mejores 3eros
+    //los valores se copian pero como solo son 12 copias por codigo, no afecta tanto la eficientcia
+
+    EntradaTabla terceros[12];
+
+    //agarramos los 3 primeros de los 12 grupos
+
+    for (int i = 0; i < 12; i++) {
+        primeros[i] = grupo[i]->getEntradaTabla(0).equipo;
+        segundos[i] = grupo[i]->getEntradaTabla(1).equipo;
+        terceros[i] = grupo[i]->getEntradaTabla(2);
+    }
+
+    // 3. Ordenar terceros y tomar los 8 mejores
+    for (int i = 0; i < 11; i++) {
+        for (int j = 0; j < 11 - i; j++) {
+            bool intercambiar =
+                terceros[j].puntos < terceros[j+1].puntos ||
+                (terceros[j].puntos == terceros[j+1].puntos &&
+                 terceros[j].dg < terceros[j+1].dg);
+            if (intercambiar) swap(terceros[j], terceros[j+1]);
+        }
+    }
+
+    // 4. Armar los 32 y simular
+    Selecciones* clasificados[32];
+    for (int i = 0; i < 12; i++) clasificados[i]      = primeros[i];
+    for (int i = 0; i < 12; i++) clasificados[i + 12] = segundos[i];
+    for (int i = 0; i < 8;  i++) clasificados[i + 24] = terceros[i].equipo;
+
+    cout << "\n------|Dieciseisavos de Final|------------\n";
+    Selecciones* ganadores[16];
+    Fecha* fechas = new Fecha(2026, 5,8);
+    for (int i = 0; i < 16; i++) {
+        Selecciones* E1 = clasificados[i];
+        Selecciones* E2 = clasificados[31 - i];
+        Partido *p= new Partido(E1,E2,fechas);          //hacemos el partido
+        p->simular(true);                                  //simulamos el partido
+        ganadores[i] = p->getGanador();
+        cout << E1->getname() << " vs " << E2->getname()
+             << " _  Gana: " << ganadores[i]->getname() << "\n";
+        delete p;  // ← liberar antes de la siguiente iteración
     }
 }
 

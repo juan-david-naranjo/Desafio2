@@ -20,6 +20,7 @@ class Partido
     Selecciones *equipo1;
     Selecciones *equipo2;
     statspartido stats;
+    short int resultado;
     bool porroga;
 
 public:
@@ -39,8 +40,13 @@ public:
     void showpartido();
     int Golesreales(short int equipo,int potencialgoles);
     void Manejarempate(int potencial1,int potencial2);
+
+
+    //Gettters
     Selecciones *getEquipo(int equipo);
     unsigned int getGol(unsigned int equipo);
+    Selecciones* getGanador();
+
 
 
 

@@ -4,6 +4,7 @@ Partido::Partido(Selecciones *team1,Selecciones *team2,Fecha *date) {
 
     equipo1=team1;
     equipo2=team2;
+    resultado=0;
     fecha=date;
     porroga=false;
     stats.convocados(equipo1->convocados(),1);
@@ -60,10 +61,12 @@ void Partido::simularFaseGrupos(){
         // cout << "gano1" << endl;
         equipo1->wingame();  // Suma 3 puntos
         equipo2->losegame(); // Suma 0 puntos
+        resultado=1;
     } else {
         // cout << "gano2" << endl;
         equipo2->wingame();
         equipo1->losegame();
+        resultado=2;
     }
     simularfaltas();
 
@@ -109,12 +112,14 @@ void Partido::simularEliminatoria(){
         equipo1->wingame();
         equipo2->actualizarstats(golesRealesE2,golesRealesE1);
         equipo2->losegame();
+        resultado=1;
     }else{
         // cout<<"Gano el equipo 2"<<endl;
         equipo2->actualizarstats(golesRealesE2,golesRealesE1);
         equipo2->wingame();
         equipo1->actualizarstats(golesRealesE1,golesRealesE2);
         equipo1->losegame();
+        resultado=2;
     }
     simularfaltas();
 }
@@ -134,20 +139,24 @@ void Partido::Manejarempate(int potencial1,int potencial2){
             // cout<<"gano 1 penales "<<endl;
             equipo1->actualizarstats(golesE1,golesE2);
             equipo1->wingame();
+            resultado=1;
 
         }else{
             // cout<<"gano 2 penales "<<endl;
             equipo2->actualizarstats(golesE2,golesE1);
             equipo2->losegame();
+            resultado=2;
         }
     }else if(golesE1>golesE2){
         // cout<<"gano equipo 1 porroga"<<endl;
         equipo1->actualizarstats(golesE1,golesE2);
         equipo1->wingame();
+        resultado=1;
     }else{
         cout<<"Gano equipo 2 porroga"<<endl;
         equipo2->actualizarstats(golesE2,golesE1);
         equipo2->wingame();
+        resultado=2;
     }
     simularfaltas();
 }
@@ -261,6 +270,13 @@ void Partido::showpartido(){
 
 }
 
+
+Selecciones* Partido:: getGanador(){
+    if(resultado==0)return nullptr;
+    if(resultado==1) return equipo1;
+    else return equipo2;
+
+}
 
 
 Selecciones *Partido::getEquipo(int equipo){

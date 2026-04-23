@@ -33,6 +33,7 @@ public:
     void simularFaseGrupos();
 
     void sortearGrupos();
+    void simularDieciseisavos();
 
     void prepararSorteo();
     bool backtrack(int grupoIdx,

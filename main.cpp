@@ -21,7 +21,7 @@ int main()
     torneo Mundial_2026;
     Mundial_2026.cargarDatos(seleccion,Registroplayers);
     Mundial_2026.simularFaseGrupos();
-
+    Mundial_2026.simularDieciseisavos();
 
 
     cout<<"Hola mundo"<<endl;
