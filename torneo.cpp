@@ -131,9 +131,124 @@ void torneo::simularDieciseisavos() {
         ganadores[i] = p->getGanador();
         cout << E1->getname() << " vs " << E2->getname()
              << " _  Gana: " << ganadores[i]->getname() << "\n";
-        delete p;  // ← liberar antes de la siguiente iteración
+        delete p;  // liberar antes de la siguiente iteración
     }
+    simularoctavos(ganadores);
 }
+
+
+void torneo::simularoctavos(Selecciones** ganadores16) {
+
+    cout<<"-------------|OCTAVOS DE FINAL|---------------|"<<endl;
+    const int NUM_PARTIDOS = 8;
+    Fecha* fecha = new Fecha(2026, 7, 10);
+    Selecciones* ganadores8[8];
+
+    for (int i = 0; i < NUM_PARTIDOS; i++) {
+        // i*2 e i*2+1 garantiza que cada equipo juega exactamente una vez
+
+        Selecciones* E1 = ganadores16[i * 2];
+        Selecciones* E2 = ganadores16[i * 2 + 1];
+
+        Partido* partido = new Partido(E1, E2, fecha);
+        partido->simular(true);
+        ganadores8[i] = partido->getGanador();
+
+        // string ganador=ganadores8[i]->getname();
+
+        delete partido;
+
+        cout << E1->getname() << " vs " << E2->getname()
+             << "  _  Gana: " << ganadores8[i]->getname() << "\n";
+
+    }
+
+    delete fecha;
+    simularCuartos(ganadores8); // ← no olvides pasar al siguiente
+}
+
+void torneo::simularCuartos(Selecciones** ganadores8) {
+    cout << "\n------|Cuartos de Final|------------\n";
+    const int NUM_PARTIDOS = 4;
+    Fecha* fecha = new Fecha(2026, 7, 10);
+    Selecciones* ganadores4[4];
+
+    for (int i = 0; i < NUM_PARTIDOS; i++) {
+        Selecciones* E1 = ganadores8[i * 2];
+        Selecciones* E2 = ganadores8[i * 2 + 1];
+
+        Partido* partido = new Partido(E1, E2, fecha);
+        partido->simular(true);
+        ganadores4[i] = partido->getGanador();
+        delete partido;
+
+        cout << E1->getname() << " vs " << E2->getname()
+             << " _ Gana: " << ganadores4[i]->getname() << "\n";
+    }
+
+    delete fecha;
+    simularSemis(ganadores4);
+}
+
+void torneo::simularSemis(Selecciones** ganadores4) {
+    cout << "\n------|Semifinales|------------\n";
+    const int NUM_PARTIDOS = 2;
+    Fecha* fecha = new Fecha(2026, 7, 10);
+    Selecciones* ganadores2[2];
+    Selecciones* perdedores2[2]; // para el tercer puesto
+
+    for (int i = 0; i < NUM_PARTIDOS; i++) {
+        Selecciones* E1 = ganadores4[i * 2];
+        Selecciones* E2 = ganadores4[i * 2 + 1];
+
+        Partido* partido = new Partido(E1, E2, fecha);
+        partido->simular(true);
+        ganadores2[i]  = partido->getGanador();
+        perdedores2[i] = (ganadores2[i] == E1) ? E2 : E1;
+        delete partido;
+
+        cout << E1->getname() << " vs " << E2->getname()
+             << " _  Gana: " << ganadores2[i]->getname() << "\n";
+    }
+
+    delete fecha;
+    simularTercerPuesto(perdedores2);
+    simularFinal(ganadores2);
+}
+
+void torneo::simularTercerPuesto(Selecciones** perdedores2) {
+    cout << "\n------|Tercer Puesto|------------\n";
+    Fecha* fecha = new Fecha(2026, 7, 10);
+
+    Partido* partido = new Partido(perdedores2[0], perdedores2[1], fecha);
+    partido->simular(true);
+    Selecciones* tercero = partido->getGanador();
+    delete partido;
+
+    cout << perdedores2[0]->getname() << " vs " << perdedores2[1]->getname()
+         << "  _ 3er Puesto: " << tercero->getname() << "\n";
+
+    delete fecha;
+}
+
+void torneo::simularFinal(Selecciones** ganadores2) {
+    cout << "\n------|FINAL|------------\n";
+    Fecha* fecha = new Fecha(2026, 7, 26);
+
+    Partido* partido = new Partido(ganadores2[0], ganadores2[1], fecha);
+    partido->simular(true);
+    Selecciones* campeon = partido->getGanador();
+    delete partido;
+
+    cout << ganadores2[0]->getname() << " vs " << ganadores2[1]->getname() << "\n";
+    cout << " CAMPEON DEL MUNDO: " << campeon->getname() << "\n";
+
+    delete fecha;
+}
+
+
+
+
 
 
 void torneo::testgrupos(){
