@@ -30,55 +30,65 @@ void torneo::imprimirCampeon(){}
 void torneo::simularFaseGrupos() {
     cout << "------|Simulacion Fase de Grupos|------------" << endl;
 
-    // 1. Generar todos los partidos de todos los grupos
-    // Cada grupo tiene 6 partidos (todos contra todos entre 4 equipos)
-    // Los fixtures son: (0v1), (0v2), (0v3), (1v2), (1v3), (2v3)
     int fixtures[6][2] = {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
+    const int TOTAL_PARTIDOS = 72;
 
-    const int TOTAL_PARTIDOS = 72; // 12 grupos x 6 partidos
     Partido* todosLosPartidos[TOTAL_PARTIDOS];
-    int idx = 0;
-
     Fecha* fechas = new Fecha(2026, 6, 20);
 
+    // Llenar el arreglo en orden: 6 partidos del grupo A, luego B, etc.
+    int idx = 0;
     for (int gp = 0; gp < 12; gp++) {
+        // grupo[gp]->imprimirGrupo();
         for (int f = 0; f < 6; f++) {
             Selecciones* E1 = grupo[gp]->getEquipo(fixtures[f][0]);
             Selecciones* E2 = grupo[gp]->getEquipo(fixtures[f][1]);
-            todosLosPartidos[idx++] = new Partido(E1, E2, fechas);
+            todosLosPartidos[idx++] = new Partido(E1, E2, fechas);          //arreglo con todos los partidos
         }
     }
 
-    // 2. Simular de 4 en 4 por dia
-    const int MAX_POR_DIA = 4;
-    int jugadosHoy = 0;
+    // partido[gp*6 + f] = partido f del grupo gp
+    // Dia d juega: fixture f = d/3, grupos gp = (d%3)*4 hasta (d%3)*4 + 3
+    for (int dia = 0; dia < 18; dia++) {
+        cout << "\n--- " << fechas->toString() << " ---\n";
 
-    for (int i = 0; i < TOTAL_PARTIDOS; i++) {
-        if (jugadosHoy == MAX_POR_DIA) {
-            fechas->avanzarDia(); // avanza al siguiente dia
-            jugadosHoy = 0;
-            cout << "\n--- " << fechas->toString()<< " ---\n";
+        int f  = dia / 3;       // que fixture toca (0 al 5)
+        int g0 = (dia % 3) * 4; // primer grupo del dia (0, 4, u 8)
+
+
+        //ya sabemos el orden de los partidos entonces unicamente, ecogemos en bloques de 4 grupos, los primeros fixtures por dia
+        for (int gp = g0; gp < g0 + 4; gp++) {
+            Partido* p = todosLosPartidos[gp * 6 + f];
+            p->simular(false);
+            // p->showpartido();
+            unsigned int E1gol=p->getGol(1);
+            unsigned int E2gol=p->getGol(2);
+
+            cout<<"GOL equipo 1 "<<E1gol<<endl;
+            cout<<"GOL equipo 2 "<<E2gol<<endl;
+            grupo[gp]->registrarResultado(f,E1gol,E2gol);        //aqui deberia actualizarse la tabla
         }
-
-        if (jugadosHoy == 0)
-            cout << "\n--- " << fechas->toString() << " ---\n";
-
-        todosLosPartidos[i]->simular(false);
-        todosLosPartidos[i]->showpartido();
-        jugadosHoy++;
+        fechas->avanzarDia();
     }
 
-    // 3. Limpiar
-    for (int i = 0; i < TOTAL_PARTIDOS; i++) {
+
+    // Limpiar
+    for (int i = 0; i < TOTAL_PARTIDOS; i++)
         delete todosLosPartidos[i];
-    }
     delete fechas;
+    for(unsigned int i=0;i<12;i++){
+        grupo[i]->imprimirTabla();          //visualizamos como quedo la tabla
+    }
 }
 
 
 void torneo::testgrupos(){
-    for(int i=0;i<12;i++){
-        grupo[i]= new Grupos((char)('A'+i),selecciones[i],selecciones[i+1],selecciones[i+2],selecciones[i+3]);
+    for(int i=0;i<12;i+=1){
+        // cout<<selecciones[i]->getname()<<endl;
+        // cout<<selecciones[i+12]->getname()<<endl;
+        // cout<<selecciones[i+24]->getname()<<endl;
+        // cout<<selecciones[i+36]->getname()<<endl;
+        grupo[i]= new Grupos((char)('A'+i),selecciones[i],selecciones[i+12],selecciones[i+24],selecciones[i+36]);
     }
 }
 
@@ -205,6 +215,8 @@ bool torneo::backtrack(int grupoIdx,        // grupo que estamos armando (0-11)
 
     return false; // ningún candidato funcionó
 }
+
+
 
 
 

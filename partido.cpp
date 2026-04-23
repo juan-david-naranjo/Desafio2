@@ -91,10 +91,10 @@ void Partido::simularEliminatoria(){
 
 
     //GOLES PARTIDO
-    int potencialGolesE1 = 10/*generarGoles(lambdaA)*/;
+    int potencialGolesE1 = generarGoles(lambdaA);
     int golesRealesE1 =Golesreales(1,potencialGolesE1);
 
-    int potencialGolesE2 = 10/*generarGoles(lambdaB)*/;
+    int potencialGolesE2 = generarGoles(lambdaB);
     int golesRealesE2 = Golesreales(2,potencialGolesE2);
 
 
@@ -170,6 +170,8 @@ int Partido::Golesreales(short int equipo,int potencialgoles){
             // cout<<"gol "<<endl;
             // Acceso por puntero para actualizar al jugador original
             stats.Getplayer(equipo, indice)->gol();      //aqui ya se actualiza los goles del jugador
+            stats.addGol(equipo);       //agrega enseguida los goles reales a las estadisticas del partido
+
         }
     }
     return goles;
@@ -261,9 +263,18 @@ void Partido::showpartido(){
 
 
 
+Selecciones *Partido::getEquipo(int equipo){
+
+    if(equipo==1) return equipo1;
+    else if(equipo==2) return equipo2;
+    else return nullptr;
+
+}
 
 
-
+unsigned int Partido:: getGol(unsigned int equipo) {
+    return stats.getgol(equipo);
+}
 
 
 

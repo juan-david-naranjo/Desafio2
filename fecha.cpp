@@ -66,7 +66,11 @@ Fecha& Fecha::operator++(){
 }
 
 void Fecha::avanzarDia() {
-    dia++;
+
+    if(dia>29){
+        dia=1;
+        mes+=1;}
+    else{dia++;}
     // Si tu clase ya maneja desbordamiento de mes, perfecto.
     // Si no, por ahora un simple dia++ funciona para la simulacion.
 }

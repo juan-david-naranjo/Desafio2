@@ -39,6 +39,8 @@ public:
     void showpartido();
     int Golesreales(short int equipo,int potencialgoles);
     void Manejarempate(int potencial1,int potencial2);
+    Selecciones *getEquipo(int equipo);
+    unsigned int getGol(unsigned int equipo);
 
 
 
