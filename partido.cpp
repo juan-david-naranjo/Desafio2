@@ -1,11 +1,10 @@
 #include "partido.h"
 
-Partido::Partido(Selecciones *team1,Selecciones *team2,string date,string hour) {
+Partido::Partido(Selecciones *team1,Selecciones *team2,Fecha *date) {
 
     equipo1=team1;
     equipo2=team2;
     fecha=date;
-    hora=hour;
     porroga=false;
     stats.convocados(equipo1->convocados(),1);
     stats.convocados(equipo2->convocados(),2);
@@ -251,11 +250,11 @@ void Partido::showpartido(){
     // Verifica que los punteros no sean nulos antes de usarlos
 
         cout << equipo1->getname() << " vs " << equipo2->getname() << endl;
-        cout << "DT: " << equipo1->getmanager() << " | DT: " << equipo2->getmanager() << endl;
-        cout<<"goles equipo 1: "<<stats.getgol(1)<<endl;
-        cout<<"posicion equipo 1: "<<stats.getgol(1)<<endl;
-        cout<<"Titulares equipo 1"<<endl;
-        stats.showconvocados();
+        // cout << "DT: " << equipo1->getmanager() << " | DT: " << equipo2->getmanager() << endl;
+        // cout<<"goles equipo 1: "<<stats.getgol(1)<<endl;
+        // cout<<"posicion equipo 1: "<<stats.getgol(1)<<endl;
+        // cout<<"Titulares equipo 1"<<endl;
+        // stats.showconvocados();
 
 
 }

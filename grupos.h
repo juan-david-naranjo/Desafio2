@@ -55,6 +55,7 @@ public:
     int           getIndE2(int p)              const;
     int           getNumPartidos()             const;
 
+
     // Imprime la tabla en consola (formato texto)
     void imprimirTabla()                       const;
     void imprimirGrupo()                       const;

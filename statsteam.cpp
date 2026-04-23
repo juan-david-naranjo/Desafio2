@@ -88,6 +88,7 @@ void statsteam::showstats() const {
     cout << "  T.Amarillas    : " << yellowCards  << endl;
     cout << "  T.Rojas        : " << redCards     << endl;
     cout << "  Faltas         : " << faults       << endl;
+
 }
 
 
