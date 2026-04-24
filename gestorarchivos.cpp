@@ -137,14 +137,23 @@ int GestorArchivos::leerSelecciones(Selecciones** equipos, int maxEquipos) const
 
 // ─────────────────────────────────────────────────────────────
 // Guarda las stats de todos los jugadores de todos los equipos
-// Formato por línea: pais;camiseta;goles;minutos;amarillas;rojas;faltas
+// Formato CSV: pais;camiseta;goles;minutos;amarillas;rojas;faltas
 // ─────────────────────────────────────────────────────────────
 void GestorArchivos::guardarJugadores(Selecciones** equipos, int numEquipos) const {
-    ofstream archivo(rutaJugadores.c_str());
+    // Asegurar extensión .csv
+    string ruta = rutaJugadores;
+    if (ruta.size() < 4 || ruta.substr(ruta.size()-4) != ".csv")
+        ruta += ".csv";
+
+    ofstream archivo(ruta.c_str());
     if (!archivo.is_open()) {
-        cout << "Error: no se pudo escribir " << rutaJugadores << endl;
+        cout << "Error: no se pudo escribir " << ruta << endl;
         return;
     }
+
+    // Encabezado CSV
+    archivo << "Pais;Camiseta;Goles;Minutos;Tarjetas Amarillas;Tarjetas Rojas;Faltas\n";
+
     for (int e = 0; e < numEquipos; e++) {
         if (!equipos[e]) continue;
         for (int j = 0; j < 26; j++) {
@@ -166,12 +175,20 @@ void GestorArchivos::guardarJugadores(Selecciones** equipos, int numEquipos) con
 // Carga las stats de jugadores desde el archivo generado arriba
 // ─────────────────────────────────────────────────────────────
 void GestorArchivos::leerJugadores(Selecciones** equipos, int numEquipos) const {
-    ifstream archivo(rutaJugadores.c_str());
+    // Intentar con .csv primero, luego sin extensión (compatibilidad)
+    string ruta = rutaJugadores;
+    if (ruta.size() < 4 || ruta.substr(ruta.size()-4) != ".csv")
+        ruta += ".csv";
+
+    ifstream archivo(ruta.c_str());
     if (!archivo.is_open()) {
-        // Si no existe el archivo aún no es error: primera ejecución
-        return;
+        // Intentar sin la extensión (archivos legados)
+        archivo.open(rutaJugadores.c_str());
+        if (!archivo.is_open()) return;  // primera ejecución, no es error
     }
     string linea;
+    // Saltar encabezado CSV
+    getline(archivo, linea);
     while (getline(archivo, linea)) {
         linea = trim(linea);
         if (linea.empty()) continue;
