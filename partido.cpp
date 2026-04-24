@@ -138,6 +138,12 @@ void Partido::showstats(){
     }
 }
 
+
+void Partido::showplayerstats(){
+    stats.Playerstats();
+}
+
+
 void Partido::Manejarempate(int potencial1,int potencial2){
 
 

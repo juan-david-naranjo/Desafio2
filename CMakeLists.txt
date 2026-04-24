@@ -15,7 +15,8 @@ add_executable(Desafio2 main.cpp
 
     grupos.h grupos.cpp
     gestorarchivos.h gestorarchivos.cpp
-    fecha.h fecha.cpp)
+    fecha.h fecha.cpp
+    medidor.h medidor.cpp)
 
 include(GNUInstallDirs)
 install(TARGETS Desafio2

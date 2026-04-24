@@ -90,26 +90,10 @@ void torneo::simularFaseGrupos() {
 
             // Mostrar los 11 titulares de cada equipo con sus stats
             // usando un formato de tabla ASCII compacto
-            cout << "  |    | # Jugador                Goles  Min  Amar  Falt |\n";
-            cout << "  |    +--------------------------------------------------+\n";
+            cout << "  |    | # Jugador                Goles  Min  Amar  Roj  Falt |\n";
+            cout << "  |    +------------------------------------------------------+\n";
 
-            for (int eq = 1; eq <= 2; eq++) {
-                string nomEq = p->getEquipo(eq)->getname();
-                while ((int)nomEq.size() < 20) nomEq += ' ';
-                cout << "  |    | ** " << nomEq
-                     << " (equipo " << eq << ")             |\n";
-                for (int k = 0; k < 11; k++) {
-                    // Accedemos via showstats indirectamente: necesitamos
-                    // los datos por jugador — los imprimimos linea a linea
-                    // Solo mostramos jugadores con alguna stat notable
-                    // (esto llama showstats internamente via p->showstats())
-                    // Aqui hacemos una linea por jugador con formato
-                    // El objeto Partido expone getGol pero no jugador directo;
-                    // la impresion detallada la delega showstats()
-                }
-                // Como showstats() imprime en su propio formato, lo llamamos
-                // y avisamos al usuario:
-            }
+            p->showplayerstats();
             // Llamada al metodo existente para stats completos
             cout << "  |    +--------------------------------------------------+\n";
             p->showstats();

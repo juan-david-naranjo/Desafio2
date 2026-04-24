@@ -29,6 +29,7 @@ public:
     void simularEliminatoria();
     void simularFaseGrupos();
     void showstats();
+    void showplayerstats();
     void simular(bool esEliminatoria);
     void FaltasPlayer(jugadores* player);
     void tryamarilla(unsigned int amarilla,jugadores* player);

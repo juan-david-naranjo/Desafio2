@@ -48,12 +48,13 @@ void jugadores::setminutos(unsigned int minutos){
 
 
 void jugadores::showststats(){
-    cout<<name<<endl;
-    cout<<"Goles: "<<goals<<endl;
-    cout<<"faltas: "<<faults<<endl;
-    cout<<"minutos jugados: "<<minutes<<endl;
-    cout<<"amarillas: "<<yellowcard<<endl;
-    cout<<"Rojas: "<<redcard;
+    cout<<"  |    |";
+    cout<<name<<"                 ";
+    cout<<goals<<"  ";
+    cout<<minutes<<"  ";
+    cout<<yellowcard<<"  ";
+    cout<<faults<<"  ";
+    cout<<redcard<<"    |\n";
 
 }
 

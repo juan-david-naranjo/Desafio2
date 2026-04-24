@@ -64,6 +64,7 @@ public:
 
 
     // Imprime la tabla en consola (formato texto)
+    void setLetra(char letter);
     void imprimirTabla()                       const;
     void imprimirGrupo()                       const;
 

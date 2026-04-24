@@ -46,8 +46,21 @@ void statspartido::convocados(jugadores** plantel, int equipo) {
 }
 
 void statspartido::Playerstats(){
+    cout<<"  |    |";
+    cout<<"Equipo 1"<<endl;
+    cout<<"|------------------------------------------------------|"<<endl;
     for(unsigned short int i=0;i<11;i++){
+
         titularesE1[i]->showststats();
+
+    }
+    cout<<"|------------------------------------------------------|"<<endl;
+    cout<<"  |    |";
+    cout<<"Equipo 2"<<endl;
+    cout<<"|------------------------------------------------------|"<<endl;
+
+    for(unsigned short int i=0;i<11;i++){
+        titularesE2[i]->showststats();
     }
 }
 void statspartido::SetPartido(bool porroga){

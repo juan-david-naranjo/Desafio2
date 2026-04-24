@@ -1,50 +1,50 @@
 Estadisticas Selecciones Mundial 2026
 Ranking fifa;Pais;Tecnico;Federacion;Confederacion;Goles Favor;Goles Contra;Partidos Ganados;Partidos Empatados;Partidos Perdidos
-1;France;Didier Deschamps;French Football Federation;UEFA;61;27;10;1;1
-2;Spain;Luis de la Fuente;Royal Spanish Football Federation;UEFA;42;32;8;2;2
-3;Argentina;Lionel Scaloni;Argentina Football Association;CONMEBOL;186;150;13;2;3
-4;England;Thomas Tuchel;The Football Association;UEFA;52;26;10;1;1
-5;Portugal;Roberto Martinez;Portuguese Football Federation;UEFA;150;132;13;1;2
-6;Brazil;Dorival Junior;Brazilian Football Confederation;CONMEBOL;64;49;9;3;3
-7;Netherlands;Ronald Koeman;Royal Dutch Football Association;UEFA;56;37;10;1;2
-8;Belgium;Rudi Garcia;Royal Belgian Football Association;UEFA;28;18;7;2;2
-9;Germany;Julian Nagelsmann;German Football Association;UEFA;36;25;8;2;2
-10;Italy;Luciano Spalletti;Italian Football Federation;UEFA;45;35;9;1;2
-11;Morocco;Walid Regragui;Royal Moroccan Football Federation;CAF;39;24;7;1;2
-12;Uruguay;Marcelo Bielsa;Uruguayan Football Association;CONMEBOL;40;33;7;3;4
-13;Colombia;Nestor Lorenzo;Colombian Football Federation;CONMEBOL;29;23;5;7;1
-14;Croatia;Zlatko Dalic;Croatian Football Federation;UEFA;83;69;9;3;2
-15;Mexico;Javier Aguirre;Mexican Football Federation;Concacaf;37;29;5;5;2
-16;United States;Mauricio Pochettino;U.S. Soccer Federation;Concacaf;52;52;6;2;4
-17;Japan;Hajime Moriyasu;Japan Football Association;AFC;164;146;13;0;1
-18;Iran;Amir Ghalenoei;Football Federation Islamic Republic of Iran;AFC;38;38;5;2;3
-19;Senegal;Pape Thiaw;Senegalese Football Federation;CAF;21;15;5;2;2
-20;Denmark;Brian Riemer;Danish Football Association;UEFA;93;56;11;1;2
-22;Austria;Ralf Rangnick;Austrian Football Association;UEFA;24;31;5;1;5
-23;Korea Republic;Hong Myung-bo;Korea Football Association;AFC;51;49;7;2;2
-25;Australia;Tony Popovic;Football Australia;AFC;25;26;4;1;4
-26;Turkey;Vincenzo Montella;Turkish Football Federation;UEFA;26;24;7;1;4
-27;Serbia;Dragan Stojkovic;Football Association of Serbia;UEFA;44;43;6;2;4
-28;Sweden;Jon Dahl Tomasson;Swedish Football Association;UEFA;25;27;5;3;3
-29;Egypt;Hossam Hassan;Egyptian Football Association;CAF;60;49;7;2;2
-30;Canada;Jesse Marsch;Canada Soccer;Concacaf;35;40;4;3;4
-31;Paraguay;Gustavo Alfaro;Paraguayan Football Association;CONMEBOL;41;58;6;3;4
-32;Panama;Thomas Christiansen;Panamanian Football Federation;Concacaf;34;35;5;2;4
-34;Nigeria;Eric Chelle;Nigeria Football Federation;CAF;23;28;5;2;4
-36;Costa Rica;Miguel Herrera;Costa Rican Football Federation;Concacaf;16;29;3;3;5
-37;Tunisia;Sabri Lamouchi;Tunisian Football Federation;CAF;155;0;12;2;0
-41;Czech Republic;Ivan Hasek;Football Association of the Czech Republic;UEFA;47;37;7;1;5
-43;Qatar;Julen Lopetegui;Qatar Football Association;AFC;39;36;5;1;3
-45;Cameroon;Marc Brys;Cameroonian Football Federation;CAF;23;29;4;0;5
-46;Scotland;Steve Clarke;Scottish Football Association;UEFA;30;43;4;2;5
-47;Uzbekistan;Timur Kapadze;Uzbekistan Football Association;AFC;46;44;4;4;2
-50;South Africa;Hugo Broos;South African Football Association;CAF;27;32;4;2;3
-51;Saudi Arabia;Herve Renard;Saudi Arabian Football Federation;AFC;54;58;5;1;5
-52;Bosnia and Herzegovina;Sergej Barbarez;Football Association of Bosnia and Herzegovina;UEFA;52;45;6;1;6
-53;Iraq;Jesus Casas;Iraq Football Association;AFC;56;66;5;1;5
-54;Jordan;Jamal Sellami;Jordan Football Association;AFC;48;32;6;2;2
-55;Ghana;Otto Addo;Ghana Football Association;CAF;78;55;9;0;3
-56;DR Congo;Sebastien Desabre;Congolese Association Football Federation;CAF;32;39;5;3;4
-57;Haiti;Sebastien Migne;Haitian Football Federation;Concacaf;23;39;3;2;6
-58;New Zealand;Darren Bazeley;New Zealand Football;OFC;28;20;5;0;1
-59;Cabo Verde;Bubista;Cape Verdean Football Federation;CAF;59;42;10;1;1
+1;France;Didier Deschamps;French Football Federation;UEFA;40483259;38075973;46;1;13
+2;Spain;Luis de la Fuente;Royal Spanish Football Federation;UEFA;11245908;11387804;37;3;13
+3;Argentina;Lionel Scaloni;Argentina Football Association;CONMEBOL;113332172;121798049;69;2;11
+4;England;Thomas Tuchel;The Football Association;UEFA;9679550;13360017;28;1;16
+5;Portugal;Roberto Martinez;Portuguese Football Federation;UEFA;126809799;150354780;53;1;26
+6;Brazil;Dorival Junior;Brazilian Football Confederation;CONMEBOL;15351284;18887384;41;3;12
+7;Netherlands;Ronald Koeman;Royal Dutch Football Association;UEFA;3724220;3940008;38;1;10
+8;Belgium;Rudi Garcia;Royal Belgian Football Association;UEFA;6939072;8726260;24;2;18
+9;Germany;Julian Nagelsmann;German Football Association;UEFA;281702;3483257;16;2;18
+10;Italy;Luciano Spalletti;Italian Football Federation;UEFA;3335651;8158183;30;3;14
+11;Morocco;Walid Regragui;Royal Moroccan Football Federation;CAF;1168662;1313001;17;1;22
+12;Uruguay;Marcelo Bielsa;Uruguayan Football Association;CONMEBOL;7691812;14929542;43;4;12
+13;Colombia;Nestor Lorenzo;Colombian Football Federation;CONMEBOL;44982510;40463057;37;7;14
+14;Croatia;Zlatko Dalic;Croatian Football Federation;UEFA;12601221;12624233;35;3;15
+15;Mexico;Javier Aguirre;Mexican Football Federation;Concacaf;9723983;14025898;9;5;22
+16;United States;Mauricio Pochettino;U.S. Soccer Federation;Concacaf;18104862;20744537;36;2;13
+17;Japan;Hajime Moriyasu;Japan Football Association;AFC;161167811;137199883;64;0;9
+18;Iran;Amir Ghalenoei;Football Federation Islamic Republic of Iran;AFC;8978994;10761105;19;2;21
+19;Senegal;Pape Thiaw;Senegalese Football Federation;CAF;2830053;3267865;14;3;22
+20;Denmark;Brian Riemer;Danish Football Association;UEFA;31123308;30527492;54;1;11
+22;Austria;Ralf Rangnick;Austrian Football Association;UEFA;270344;4184681;5;1;29
+23;Korea Republic;Hong Myung-bo;Korea Football Association;AFC;3880615;5358691;22;4;19
+25;Australia;Tony Popovic;Football Australia;AFC;3708694;4385364;8;1;28
+26;Turkey;Vincenzo Montella;Turkish Football Federation;UEFA;3126192;8759011;16;1;24
+27;Serbia;Dragan Stojkovic;Football Association of Serbia;UEFA;8873279;10693087;15;2;25
+28;Sweden;Jon Dahl Tomasson;Swedish Football Association;UEFA;2899137;4092898;5;3;27
+29;Egypt;Hossam Hassan;Egyptian Football Association;CAF;45068101;42957201;31;2;19
+30;Canada;Jesse Marsch;Canada Soccer;Concacaf;3200286;4323431;5;3;27
+31;Paraguay;Gustavo Alfaro;Paraguayan Football Association;CONMEBOL;19761778;26888432;11;3;23
+32;Panama;Thomas Christiansen;Panamanian Football Federation;Concacaf;3119180;4231807;5;2;28
+34;Nigeria;Eric Chelle;Nigeria Football Federation;CAF;1124104;1476536;7;3;26
+36;Costa Rica;Miguel Herrera;Costa Rican Football Federation;Concacaf;3796895;4970846;3;3;29
+37;Tunisia;Sabri Lamouchi;Tunisian Football Federation;CAF;102884548;0;76;2;0
+41;Czech Republic;Ivan Hasek;Football Association of the Czech Republic;UEFA;5717568;9693485;24;2;23
+43;Qatar;Julen Lopetegui;Qatar Football Association;AFC;3727350;4220963;31;1;14
+45;Cameroon;Marc Brys;Cameroonian Football Federation;CAF;2623278;4520797;10;1;26
+46;Scotland;Steve Clarke;Scottish Football Association;UEFA;7293259;11854658;4;2;29
+47;Uzbekistan;Timur Kapadze;Uzbekistan Football Association;AFC;9226872;13409660;12;5;25
+50;South Africa;Hugo Broos;South African Football Association;CAF;12159012;19096508;10;2;23
+51;Saudi Arabia;Herve Renard;Saudi Arabian Football Federation;AFC;7989940;8785047;12;1;29
+52;Bosnia and Herzegovina;Sergej Barbarez;Football Association of Bosnia and Herzegovina;UEFA;20494433;30782855;9;1;27
+53;Iraq;Jesus Casas;Iraq Football Association;AFC;11327552;12170349;19;1;26
+54;Jordan;Jamal Sellami;Jordan Football Association;AFC;3500660;4393894;18;2;22
+55;Ghana;Otto Addo;Ghana Football Association;CAF;8681410;12298767;18;0;22
+56;DR Congo;Sebastien Desabre;Congolese Association Football Federation;CAF;2530460;7062829;21;3;20
+57;Haiti;Sebastien Migne;Haitian Football Federation;Concacaf;3337053;4113836;5;3;28
+58;New Zealand;Darren Bazeley;New Zealand Football;OFC;6621818;6298741;23;0;18
+59;Cabo Verde;Bubista;Cape Verdean Football Federation;CAF;3948728;5395190;19;1;22

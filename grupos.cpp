@@ -151,6 +151,11 @@ void Grupos::imprimirGrupo() const {
     cout << endl;
 }
 
+void Grupos::setLetra(char letter) {
+    letra=letter;
+
+}
+
 
 
 Grupos::~Grupos() {
