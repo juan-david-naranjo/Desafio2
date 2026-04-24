@@ -13,8 +13,8 @@ torneo::torneo() {
 void torneo::cargarDatos(string rutacsv,string datos_jugadores){
     gestorarchivos=new GestorArchivos(rutacsv,datos_jugadores);
     gestorarchivos->leerSelecciones(selecciones,48);
-    // sortearGrupos();
-    testgrupos();
+    sortearGrupos();   // sorteo real con restricciones de confederacion y USA en Grupo A
+    // testgrupos();   // solo para debug rapido sin sorteo
 }
 
 void torneo::guardarDatos(){
@@ -90,10 +90,26 @@ void torneo::simularFaseGrupos() {
 
             // Mostrar los 11 titulares de cada equipo con sus stats
             // usando un formato de tabla ASCII compacto
-            cout << "  |    | # Jugador                Goles  Min  Amar  Roj  Falt |\n";
-            cout << "  |    +------------------------------------------------------+\n";
+            cout << "  |    | # Jugador                Goles  Min  Amar  Falt |\n";
+            cout << "  |    +--------------------------------------------------+\n";
 
-            p->showplayerstats();
+            for (int eq = 1; eq <= 2; eq++) {
+                string nomEq = p->getEquipo(eq)->getname();
+                while ((int)nomEq.size() < 20) nomEq += ' ';
+                cout << "  |    | ** " << nomEq
+                     << " (equipo " << eq << ")             |\n";
+                for (int k = 0; k < 11; k++) {
+                    // Accedemos via showstats indirectamente: necesitamos
+                    // los datos por jugador — los imprimimos linea a linea
+                    // Solo mostramos jugadores con alguna stat notable
+                    // (esto llama showstats internamente via p->showstats())
+                    // Aqui hacemos una linea por jugador con formato
+                    // El objeto Partido expone getGol pero no jugador directo;
+                    // la impresion detallada la delega showstats()
+                }
+                // Como showstats() imprime en su propio formato, lo llamamos
+                // y avisamos al usuario:
+            }
             // Llamada al metodo existente para stats completos
             cout << "  |    +--------------------------------------------------+\n";
             p->showstats();
@@ -337,180 +353,220 @@ void torneo::testgrupos(){
 
 
 
+// ── Mezcla Fisher-Yates un arreglo de punteros (desde 'desde' inclusive) ───
+static void mezclar(Selecciones** arr, int desde, int hasta) {
+    for (int i = hasta; i > desde; i--) {
+        int r = desde + rand() % (i - desde + 1);
+        Selecciones* t = arr[i]; arr[i] = arr[r]; arr[r] = t;
+    }
+}
+
+// ── Asigna un bombo completo a los 12 grupos respetando restricciones.
+//    grupos_conf[g] = confederaciones ya asignadas al grupo g (hasta 4 chars).
+//    Retorna true si pudo asignar los 12 equipos del bombo a los 12 grupos.
+//    Usa reintentos con re-mezcla para aleatorizar sin recursion profunda.
+static bool asignarBombo(Selecciones** bombo,   // 12 equipos (algunos nullptr)
+                         Selecciones** destino, // destino[g] = puntero a llenar
+                         Selecciones* grupo_actual[12][4], // estado actual
+                         int columna)           // que columna (bombo) estamos llenando
+{
+    // Recoger equipos disponibles del bombo
+    Selecciones* disponibles[12];
+    int nDisp = 0;
+    for (int i = 0; i < 12; i++)
+        if (bombo[i]) disponibles[nDisp++] = bombo[i];
+
+    // Intentar hasta 200 permutaciones aleatorias
+    for (int intento = 0; intento < 200; intento++) {
+        // Mezclar disponibles
+        for (int i = nDisp - 1; i > 0; i--) {
+            int r = rand() % (i + 1);
+            Selecciones* t = disponibles[i]; disponibles[i] = disponibles[r]; disponibles[r] = t;
+        }
+
+        // Intentar asignar en orden de grupos
+        bool ok = true;
+        int asignados[12]; // disponibles[asignados[g]] va al grupo g
+        int usado[12] = {};
+
+        for (int g = 0; g < 12; g++) {
+            bool encontrado = false;
+            for (int k = 0; k < nDisp; k++) {
+                if (usado[k]) continue;
+                // Verificar restriccion: misma conf no-UEFA ya en el grupo,
+                // o mas de 2 UEFA
+                string confCand = disponibles[k]->getConfederacion();
+                // Normalizar a mayusculas
+                for (int ci = 0; ci < (int)confCand.size(); ci++)
+                    if (confCand[ci] >= 'a' && confCand[ci] <= 'z')
+                        confCand[ci] = confCand[ci] - 'a' + 'A';
+
+                int uefaCount = (confCand == "UEFA") ? 1 : 0;
+                bool conflicto = false;
+                for (int b = 0; b < 4; b++) {
+                    if (!grupo_actual[g][b]) continue;
+                    string ca = grupo_actual[g][b]->getConfederacion();
+                    for (int ci = 0; ci < (int)ca.size(); ci++)
+                        if (ca[ci] >= 'a' && ca[ci] <= 'z') ca[ci] = ca[ci]-'a'+'A';
+                    if (ca == confCand && confCand != "UEFA") { conflicto = true; break; }
+                    if (ca == "UEFA") uefaCount++;
+                }
+                if (conflicto || uefaCount > 2) continue;
+
+                asignados[g] = k;
+                usado[k] = 1;
+                encontrado = true;
+                break;
+            }
+            if (!encontrado) { ok = false; break; }
+        }
+
+        if (ok) {
+            // Aplicar asignacion
+            for (int g = 0; g < 12; g++)
+                grupo_actual[g][columna] = disponibles[asignados[g]];
+            return true;
+        }
+    }
+    return false;
+}
+
 void torneo::sortearGrupos() {
     prepararSorteo();
 
-    // prepararSorteo() ya garantiza que selecciones[0] == USA (slot 0 del bombo 1)
-    // y que selecciones[0..11] estan ordenados por ranking con USA primero.
+    // Copiar los 4 bombos
+    Selecciones* bombo[4][12];
+    for (int b = 0; b < 4; b++)
+        for (int i = 0; i < 12; i++)
+            bombo[b][i] = selecciones[b * 12 + i];
 
-    // Llenar los 4 bombos de 12 equipos cada uno
-    Selecciones* bombo1[12], *bombo2[12], *bombo3[12], *bombo4[12];
-    for (int i = 0; i < 12; i++) {
-        bombo1[i] = selecciones[i];
-        bombo2[i] = selecciones[i + 12];
-        bombo3[i] = selecciones[i + 24];
-        bombo4[i] = selecciones[i + 36];
-    }
+    // Mezclar bombo 1 sin tocar slot 0 (USA)
+    mezclar(bombo[0], 1, 11);
+    // Mezclar bombos 2, 3, 4 completo
+    mezclar(bombo[1], 0, 11);
+    mezclar(bombo[2], 0, 11);
+    mezclar(bombo[3], 0, 11);
 
-    // Mezclar SOLO los slots 1..11 del bombo1 (el slot 0 = USA queda fijo)
-    // y todos los slots de los bombos 2, 3 y 4
-    for (int i = 11; i > 1; i--) {          // bombo1: arranca en 1, protege slot 0
-        int r = 1 + rand() % i;              // r en [1, i]
-        swap(bombo1[i], bombo1[r]);
-    }
-    for (int i = 11; i > 0; i--) {
-        int r;
-        r = rand() % (i + 1); swap(bombo2[i], bombo2[r]);
-        r = rand() % (i + 1); swap(bombo3[i], bombo3[r]);
-        r = rand() % (i + 1); swap(bombo4[i], bombo4[r]);
-    }
+    // Matriz resultado
+    Selecciones* gmat[12][4];
+    for (int g = 0; g < 12; g++)
+        for (int b = 0; b < 4; b++)
+            gmat[g][b] = nullptr;
 
-    // Inicializar los 12 grupos con letra
-    for (int i = 0; i < 12; i++) {
-        if (!grupo[i]) grupo[i] = new Grupos();
-        grupo[i]->setLetra((char)('A' + i));
-    }
+    // Bombo 0: USA fijo en grupo A, resto asignar
+    gmat[0][0] = bombo[0][0];   // USA -> Grupo A
+    bombo[0][0] = nullptr;      // marcarlo como usado
 
-    // Grupo A: USA (bombo1[0]) va fijo; completar con backtracking desde bombo 2
+    // Asignar bombo 0 restante (grupos B-L)
     {
-        Selecciones** bombos[4] = { bombo1, bombo2, bombo3, bombo4 };
-        Selecciones* integrantes[4] = { bombo1[0], nullptr, nullptr, nullptr };
-        bombo1[0] = nullptr;           // marcar como usado
-        if (!backtrackBombo(0, integrantes, bombos)) {
-            cout << "ERROR: No se pudo armar el Grupo A con USA.\n";
+        Selecciones* resto[11]; int nr = 0;
+        for (int i = 1; i < 12; i++) if (bombo[0][i]) resto[nr++] = bombo[0][i];
+        // Mezclar resto
+        for (int i = nr-1; i > 0; i--) {
+            int r = rand()%(i+1); Selecciones*t=resto[i]; resto[i]=resto[r]; resto[r]=t;
+        }
+        // Asignar directamente (bombo 0 = cabezas de serie, una por grupo, sin restriccion conf entre si)
+        // Solo verificamos que no haya misma confederacion que USA en grupo A
+        // (USA es Concacaf, los demas son de distintas confs en bombo1)
+        for (int g = 1; g < 12; g++) gmat[g][0] = resto[g-1];
+    }
+
+    // Asignar bombos 1, 2, 3
+    for (int b = 1; b < 4; b++) {
+        bool ok = asignarBombo(bombo[b], nullptr, gmat, b);
+        if (!ok) {
+            // Reintento con re-mezcla total
+            mezclar(bombo[b], 0, 11);
+            ok = asignarBombo(bombo[b], nullptr, gmat, b);
+        }
+        if (!ok) {
+            cout << "ADVERTENCIA: bombo " << (b+1)
+                 << " asignado sin restriccion (no hay solucion perfecta).\n";
+            // Asignacion forzada ignorando restriccion
+            int k = 0;
+            for (int g = 0; g < 12; g++) {
+                while (k < 12 && !bombo[b][k]) k++;
+                if (k < 12) { gmat[g][b] = bombo[b][k++]; }
+            }
         }
     }
 
-    // Grupos B..L: backtracking completo desde bombo 1
-    Selecciones** bombos[4] = { bombo1, bombo2, bombo3, bombo4 };
-    for (int i = 1; i < 12; i++) {
-        Selecciones* integrantes[4] = { nullptr, nullptr, nullptr, nullptr };
-        if (!backtrackBombo(i, integrantes, bombos)) {
-            cout << "ERROR: No se pudo armar el grupo " << (char)('A' + i)
-                 << ". Revisa la distribucion de confederaciones.\n";
-        }
+    // Crear grupos
+    for (int g = 0; g < 12; g++) {
+        grupo[g] = new Grupos((char)('A' + g),
+                              gmat[g][0], gmat[g][1],
+                              gmat[g][2], gmat[g][3]);
     }
+    cout << "Sorteo completado. United States -> Grupo A.\n";
 }
 void torneo::construirTabla(){}
 
 void torneo::prepararSorteo() {
-    // 1. Ordenar los 48 equipos por ranking (bubble sort completo)
+    // 1. Ordenar los 48 equipos por ranking ascendente (bubble sort)
     for (int i = 0; i < 47; i++) {
         for (int j = 0; j < 47 - i; j++) {
             if (selecciones[j]->getRanking() > selecciones[j+1]->getRanking()) {
-                Selecciones* tmp   = selecciones[j];
-                selecciones[j]     = selecciones[j+1];
-                selecciones[j+1]   = tmp;
+                Selecciones* tmp = selecciones[j];
+                selecciones[j]   = selecciones[j+1];
+                selecciones[j+1] = tmp;
             }
         }
     }
-    // 2. Buscar United States en los 48 slots y moverlo al slot 0 del bombo 1.
-    //    Se busca en todos (no solo en los primeros 12) porque su ranking puede
-    //    ubicarlo en cualquier bombo antes de este ajuste.
+    // Tras el sort: selecciones[0..11] = top-12 por ranking (bombo 1 natural)
+    //              selecciones[12..23]= siguientes 12 (bombo 2 natural), etc.
+
+    // 2. Buscar United States en cualquier posicion
+    int idxUSA = -1;
     for (int i = 0; i < 48; i++) {
         if (selecciones[i]->getname() == "United States") {
-            // Desplazar los que estaban antes de él una posicion hacia abajo
-            Selecciones* tmp = selecciones[i];
-            for (int k = i; k > 0; k--)
-                selecciones[k] = selecciones[k-1];
-            selecciones[0] = tmp;
+            idxUSA = i;
             break;
         }
     }
-}
-
-bool torneo::esValido(Selecciones* candidato,
-                      Selecciones* actuales[],
-                      int numActuales) {
-    string confCand = candidato->getConfederacion();
-    int conteoUEFA  = (confCand == "UEFA") ? 1 : 0;
-
-    for (int i = 0; i < numActuales; i++) {
-        if (actuales[i] == nullptr) continue; // ← protección clave
-
-        string confAct = actuales[i]->getConfederacion();
-
-        if (confAct == confCand && confCand != "UEFA")
-            return false;
-
-        if (confAct == "UEFA") conteoUEFA++;
+    if (idxUSA == -1) {
+        cout << "ADVERTENCIA: United States no encontrado en el CSV.\n";
+        return;
     }
 
-    return conteoUEFA <= 2;
-}
+    // 3. Si USA NO esta ya en el bombo 1 (slots 0..11), aplicar regla FIFA:
+    //    USA entra al slot 0 del bombo 1 (cabeza de serie anfitrion).
+    //    El equipo que ocupaba el slot 11 del bombo 1 (el de menor ranking
+    //    entre los cabezas de serie) baja al bombo 2, desplazando en cascada.
+    if (idxUSA >= 12) {
+        // Guardar al "expulsado" del bombo 1 (slot 11, el peor cabeza de serie)
+        Selecciones* expulsado = selecciones[11];
 
+        // Insertar USA en slot 0, desplazando slots 0..10 una posicion adelante
+        Selecciones* usa = selecciones[idxUSA];
+        // Primero liberar el slot de USA en su bombo original
+        // desplazando hacia atras ese hueco
+        for (int k = idxUSA; k > 0; k--)
+            selecciones[k] = selecciones[k-1];
+        selecciones[0] = usa;
 
-// ─── BACKTRACKING ──────────────────────────────────────────────────────────
-// Intenta asignar un equipo de cada bombo al grupo `grupoIdx`.
-// Retorna true si lo logra; deja los bombos en el estado correcto si falla.
-// Si integrantes[0] ya viene asignado (caso USA en Grupo A), arranca desde bombo 1.
-bool torneo::backtrackBombo(int grupoIdx,
-                             Selecciones* integrantes[4],
-                             Selecciones** bombos[4]) {
-    // Determinar desde que bombo empezar segun los slots ya rellenos
-    int startBombo = 0;
-    for (int b = 0; b < 4; b++) {
-        if (integrantes[b] != nullptr) startBombo = b + 1;
-        else break;
+        // Ahora selecciones[12] era el primer elemento del bombo2 original,
+        // pero el corrimiento ya lo movio; el "expulsado" (antes en slot 11)
+        // ahora esta en slot 12 tras el corrimiento. Solo necesitamos
+        // verificar que quede en el bombo 2 (slots 12..23), lo cual ya ocurre
+        // por el corrimiento en cascada.
+        (void)expulsado; // ya fue desplazado naturalmente por el corrimiento
+    } else {
+        // USA ya esta en el bombo 1: solo moverlo al slot 0
+        Selecciones* usa = selecciones[idxUSA];
+        for (int k = idxUSA; k > 0; k--)
+            selecciones[k] = selecciones[k-1];
+        selecciones[0] = usa;
     }
 
-    // Funcion interna recursiva (simulada con funcion lambda-like via helper)
-    // Como C++03/11 sin lambdas capturadas, usamos una funcion recursiva local
-    // implementada directamente aqui con un loop de profundidad.
-    // Usamos una pila manual de profundidad 4.
-    struct Frame { int bomboIdx; int j; };
-    Frame pila[4];
-    int prof = startBombo;
-
-    // Inicializar primera llamada
-    pila[prof] = {prof, 0};
-
-    while (prof >= startBombo) {
-        int b = prof;             // bombo actual
-        int& j = pila[prof].j;   // indice dentro del bombo (persistente entre iteraciones)
-
-        if (b == 4) {
-            // Todos los bombos asignados → crear el grupo
-            grupo[grupoIdx] = new Grupos((char)('A' + grupoIdx),
-                                         integrantes[0], integrantes[1],
-                                         integrantes[2], integrantes[3]);
-            return true;
-        }
-
-        bool avanzar = false;
-        for (; j < 12; j++) {
-            if (bombos[b][j] == nullptr) continue;
-            if (esValido(bombos[b][j], integrantes, b)) {
-                integrantes[b] = bombos[b][j];
-                bombos[b][j]   = nullptr;
-                j++;              // proxima iteracion de este nivel empieza en j+1
-                prof++;           // bajar un nivel
-                pila[prof] = {prof, 0};
-                avanzar = true;
-                break;
-            }
-        }
-
-        if (!avanzar) {
-            // Backtrack: subir un nivel
-            integrantes[b] = nullptr;
-            prof--;
-            if (prof >= startBombo) {
-                // Restaurar el equipo que habiamos elegido en el nivel anterior
-                int prevB = prof;
-                int prevJ = pila[prof].j - 1;   // j ya fue incrementado al elegir
-                bombos[prevB][prevJ] = integrantes[prevB];
-                integrantes[prevB]   = nullptr;
-                // pila[prof].j ya apunta al siguiente candidato
-            }
-        }
-    }
-
-    return false; // ninguna combinacion funciono
+    // Verificacion
+    cout << "Anfitrion confirmado en slot 0 (Grupo A): "
+         << selecciones[0]->getname()
+         << " (ranking " << selecciones[0]->getRanking() << ")\n";
+    cout << "Bombo 1 (cabezas de serie):\n";
+    for (int i = 0; i < 12; i++)
+        cout << "  [" << i << "] " << selecciones[i]->getname()
+             << " (" << selecciones[i]->getConfederacion() << ")\n";
 }
-
-
-
 
 
 

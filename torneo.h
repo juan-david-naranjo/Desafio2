@@ -43,8 +43,6 @@ public:
     void simularFinal(Selecciones** ganadores2);
 
     void prepararSorteo();
-    bool backtrackBombo(int grupoIdx, Selecciones* integrantes[4], Selecciones** bombos[4]);
-    bool esValido(Selecciones* candidato, Selecciones* actuales[], int numActuales);
 
     void imprimirGrupos() const;
 

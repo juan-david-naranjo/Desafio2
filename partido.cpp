@@ -15,44 +15,51 @@ void Partido::simular(bool esEliminatoria) {
     if (esEliminatoria) {
         simularEliminatoria(); // La que ya tienes con prórroga
         porroga=true;
-        calcularposesion();
         stats.SetPartido(porroga);
     } else {
         simularFaseGrupos();   // La nueva versión sin prórroga
-        calcularposesion();
         stats.SetPartido(porroga);
     }
 }
 
 void Partido::simularFaseGrupos(){
-    unsigned int gfA=equipo1->favorGoals();
-    unsigned int gfB=equipo2->favorGoals();
-    unsigned int gcA=equipo1->counterGoals();
-    unsigned int gcB=equipo2->counterGoals();
+    // Partidos jugados históricamente por cada equipo (mínimo 1 para evitar /0)
+    unsigned int pjA = equipo1->getWin() + equipo1->getLose() + equipo1->getDraws();
+    unsigned int pjB = equipo2->getWin() + equipo2->getLose() + equipo2->getDraws();
+    if (pjA == 0) pjA = 1;
+    if (pjB == 0) pjB = 1;
 
-    //constantes formula goles
+    // Promedios de goles por partido (valores alrededor de 1.0-2.0, acordes con µ=1.35)
+    double gfA = (double)equipo1->favorGoals()  / pjA;
+    double gfB = (double)equipo2->favorGoals()  / pjB;
+    double gcA = (double)equipo1->counterGoals()/ pjA;
+    double gcB = (double)equipo2->counterGoals()/ pjB;
 
-    const double mu = 1.35;
+    // Valores mínimos para evitar pow(0, alpha) = 0
+    if (gfA < 0.1) gfA = 0.1;
+    if (gfB < 0.1) gfB = 0.1;
+    if (gcA < 0.1) gcA = 0.1;
+    if (gcB < 0.1) gcB = 0.1;
+
+    // Constantes fijas del modelo
+    const double mu    = 1.35;
     const double alpha = 0.6;
-    const double beta = 0.4;
+    const double beta  = 0.4;
 
-    //constantes formula goles
+    // λ_A = µ * (GF_A / µ)^α * (GC_B / µ)^β
+    double lambdaA = mu * pow(gfA / mu, alpha) * pow(gcB / mu, beta);
+    // λ_B = µ * (GF_B / µ)^α * (GC_A / µ)^β
+    double lambdaB = mu * pow(gfB / mu, alpha) * pow(gcA / mu, beta);
 
-    //Goles equipo 1
-    double lambdaA = mu * pow((gfA / mu), alpha) * pow((gcB / mu), beta);
+    // La distribución de Poisson ya entrega los goles del partido directamente
+    int golesRealesE1 = generarGoles(lambdaA);
+    int golesRealesE2 = generarGoles(lambdaB);
 
-    // goles equipo 2
-    double lambdaB = mu * pow((gfB / mu), alpha) * pow((gcA / mu), beta);
+    // Asignar goles a jugadores individuales
+    asignarGolesJugadores(1, golesRealesE1);
+    asignarGolesJugadores(2, golesRealesE2);
 
-
-    //GOLES PARTIDO
-    int potencialGolesE1 = generarGoles(lambdaA);
-    int golesRealesE1 =Golesreales(1,potencialGolesE1);
-
-    int potencialGolesE2 = generarGoles(lambdaB);
-    int golesRealesE2 = Golesreales(2,potencialGolesE2);
-
-    equipo1->actualizarstats(golesRealesE1, golesRealesE2);     //se actualiza las estadisticas de las selecciones
+    equipo1->actualizarstats(golesRealesE1, golesRealesE2);
     equipo2->actualizarstats(golesRealesE2, golesRealesE1);
 
     if (golesRealesE1 == golesRealesE2) {
@@ -77,35 +84,39 @@ void Partido::simularFaseGrupos(){
 
 
 void Partido::simularEliminatoria(){
-    unsigned int gfA=equipo1->favorGoals();
-    unsigned int gfB=equipo2->favorGoals();
-    unsigned int gcA=equipo1->counterGoals();
-    unsigned int gcB=equipo2->counterGoals();
+    // Partidos jugados históricamente (mínimo 1 para evitar /0)
+    unsigned int pjA = equipo1->getWin() + equipo1->getLose() + equipo1->getDraws();
+    unsigned int pjB = equipo2->getWin() + equipo2->getLose() + equipo2->getDraws();
+    if (pjA == 0) pjA = 1;
+    if (pjB == 0) pjB = 1;
 
+    // Promedios de goles por partido
+    double gfA = (double)equipo1->favorGoals()  / pjA;
+    double gfB = (double)equipo2->favorGoals()  / pjB;
+    double gcA = (double)equipo1->counterGoals()/ pjA;
+    double gcB = (double)equipo2->counterGoals()/ pjB;
 
-    //constantes formula goles
+    if (gfA < 0.1) gfA = 0.1;
+    if (gfB < 0.1) gfB = 0.1;
+    if (gcA < 0.1) gcA = 0.1;
+    if (gcB < 0.1) gcB = 0.1;
 
-    const double mu = 1.35;
+    // Constantes fijas del modelo
+    const double mu    = 1.35;
     const double alpha = 0.6;
-    const double beta = 0.4;
-    //Goles equipo 1
-    double lambdaA = mu * pow((gfA / mu), alpha) * pow((gcB / mu), beta);
+    const double beta  = 0.4;
 
-    // goles equipo 2
-    double lambdaB = mu * pow((gfB / mu), alpha) * pow((gcA / mu), beta);
+    double lambdaA = mu * pow(gfA / mu, alpha) * pow(gcB / mu, beta);
+    double lambdaB = mu * pow(gfB / mu, alpha) * pow(gcA / mu, beta);
 
-
-    //GOLES PARTIDO
-    int potencialGolesE1 = generarGoles(lambdaA);
-    int golesRealesE1 =Golesreales(1,potencialGolesE1);
-
-    int potencialGolesE2 = generarGoles(lambdaB);
-    int golesRealesE2 = Golesreales(2,potencialGolesE2);
+    // Goles directamente desde Poisson
+    int golesRealesE1 = generarGoles(lambdaA);
+    int golesRealesE2 = generarGoles(lambdaB);
 
 
     if(golesRealesE1==golesRealesE2){
         porroga=true;
-        Manejarempate(potencialGolesE1,potencialGolesE2);
+        Manejarempate(golesRealesE1,golesRealesE2);
 
     }
     else if(golesRealesE1>golesRealesE2){
@@ -127,57 +138,56 @@ void Partido::simularEliminatoria(){
 }
 
 void Partido::showstats(){
-
-    stats.show();
-    for(unsigned int i=0;i<3;i++){
-        jugadores *playerE1=stats.Getplayer(1,i);       //obtengo el puntero al jugador en el partido
-        jugadores *playerE2=stats.Getplayer(2,i);
-        cout<<"Goleadores Equipo 1: "<<playerE1->getname()<<" ---- ";
-        cout<<"Goleadores Equipo 2: "<<playerE2->getname()<<endl;
-
-    }
-}
-
-
-void Partido::showplayerstats(){
     stats.Playerstats();
 }
 
+void Partido::Manejarempate(int golesE1Reg, int golesE2Reg){
+    // Prórroga: se generan nuevos goles con lambdas reducidas (factor 0.5 → ~30 min extra)
+    unsigned int pjA = equipo1->getWin() + equipo1->getLose() + equipo1->getDraws();
+    unsigned int pjB = equipo2->getWin() + equipo2->getLose() + equipo2->getDraws();
+    if (pjA == 0) pjA = 1;
+    if (pjB == 0) pjB = 1;
 
-void Partido::Manejarempate(int potencial1,int potencial2){
+    double gfA = (double)equipo1->favorGoals()  / pjA;
+    double gfB = (double)equipo2->favorGoals()  / pjB;
+    double gcA = (double)equipo1->counterGoals()/ pjA;
+    double gcB = (double)equipo2->counterGoals()/ pjB;
+    if (gfA < 0.1) gfA = 0.1;
+    if (gfB < 0.1) gfB = 0.1;
+    if (gcA < 0.1) gcA = 0.1;
+    if (gcB < 0.1) gcB = 0.1;
 
+    const double mu = 1.35, alpha = 0.6, beta = 0.4;
+    // Prórroga ≈ 30 min extra → escalar lambda por 30/90 ≈ 0.33
+    double lambdaA = mu * pow(gfA / mu, alpha) * pow(gcB / mu, beta) * 0.33;
+    double lambdaB = mu * pow(gfB / mu, alpha) * pow(gcA / mu, beta) * 0.33;
 
-    int golesE1=Golesreales(1,potencial1);
-    int golesE2=Golesreales(2,potencial2);
+    int golesE1 = golesE1Reg + generarGoles(lambdaA);
+    int golesE2 = golesE2Reg + generarGoles(lambdaB);
+
     if(golesE1==golesE2){
+        // Penales: 50/50
         int prob=rand()%2;
         if(prob==1){
-            // cout<<"gano 1 penales "<<endl;
             equipo1->actualizarstats(golesE1,golesE2);
             equipo1->wingame();
-            equipo2->losegame();
             resultado=1;
-
         }else{
-            // cout<<"gano 2 penales "<<endl;
             equipo2->actualizarstats(golesE2,golesE1);
             equipo2->wingame();
-            equipo1->losegame();
             resultado=2;
         }
     }else if(golesE1>golesE2){
-        // cout<<"gano equipo 1 porroga"<<endl;
         equipo1->actualizarstats(golesE1,golesE2);
         equipo1->wingame();
-        equipo2->losegame();
         resultado=1;
     }else{
-        cout<<"Gano equipo 2 porroga"<<endl;
         equipo2->actualizarstats(golesE2,golesE1);
         equipo2->wingame();
-        equipo1->losegame();
         resultado=2;
     }
+    asignarGolesJugadores(1, generarGoles(lambdaA));
+    asignarGolesJugadores(2, generarGoles(lambdaB));
     simularfaltas();
 }
 
@@ -187,25 +197,31 @@ void Partido::Manejarempate(int potencial1,int potencial2){
 
 
 
+// Distribuye 'numGoles' goles ya calculados entre los 11 titulares del equipo.
+// Reemplaza a Golesreales: la Poisson ya es el resultado final, no un potencial.
+void Partido::asignarGolesJugadores(short int equipo, int numGoles){
+    for (int i = 0; i < numGoles; i++) {
+        int indice = rand() % 11;
+        jugadores* jug = stats.Getplayer(equipo, indice);
+        if (jug) {
+            jug->gol();
+            stats.addGol(equipo);
+        }
+    }
+}
+
+// Conservado por compatibilidad (ya no se llama internamente)
 int Partido::Golesreales(short int equipo,int potencialgoles){
     int goles=0;
     for (int i = 0; i < potencialgoles; i++) {
-
         int indice = rand() % 11;
-        // cout<<"gol? "<<indice<<endl;
-
         if ((rand() % 100) < 40) {
             goles++;
-            // cout<<"gol "<<endl;
-            // Acceso por puntero para actualizar al jugador original
-            stats.Getplayer(equipo, indice)->gol();      //aqui ya se actualiza los goles del jugador
-            stats.addGol(equipo);       //agrega enseguida los goles reales a las estadisticas del partido
-
-
+            stats.Getplayer(equipo, indice)->gol();
+            stats.addGol(equipo);
         }
     }
     return goles;
-
 }
 void Partido::simularfaltas(){
 
@@ -277,12 +293,6 @@ void Partido::oncetitular(){
     stats.convocados(equipo2->convocados(),2);
 }
 
-void Partido::calcularposesion(){
-    int rank1=equipo1->getRanking();
-    int rank2=equipo2->getRanking();
-    stats.calcularPosesion(rank1,rank2);
-}
-
 
 void Partido::showpartido(){
     // Verifica que los punteros no sean nulos antes de usarlos
@@ -304,7 +314,6 @@ Selecciones* Partido:: getGanador(){
     else return equipo2;
 
 }
-
 
 
 Selecciones *Partido::getEquipo(int equipo){

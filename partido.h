@@ -26,15 +26,14 @@ class Partido
 public:
     Partido(Selecciones *team1,Selecciones *team2,Fecha *date);    //constructor
     int generarGoles(double lambda);
+    void asignarGolesJugadores(short int equipo, int numGoles); // nuevo: distribuye goles entre titulares
     void simularEliminatoria();
     void simularFaseGrupos();
     void showstats();
-    void showplayerstats();
     void simular(bool esEliminatoria);
     void FaltasPlayer(jugadores* player);
     void tryamarilla(unsigned int amarilla,jugadores* player);
     void simularfaltas();
-    void calcularposesion();
 
 
 

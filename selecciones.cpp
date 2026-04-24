@@ -108,7 +108,7 @@ unsigned int Selecciones::getDraws() const{return stats.getDraws();}
 
 void Selecciones::showplayers(){
     for(int i=0;i<26;i++){
-        players[i]->getname();
+        cout << players[i]->getname() << endl;
     }
 }
 void Selecciones::showstats(){
