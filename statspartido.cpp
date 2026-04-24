@@ -11,6 +11,17 @@ statspartido::statspartido() {
     }
 }
 
+void statspartido::show(){
+
+    cout<<"----|Estadisticas del Partido|----"<<endl;
+    cout<<"----Goles Equipo 1: "<<golesE1;
+    cout<<" Goles Equipo 2: "<<golesE2;
+    cout<<" ----"<<endl;
+    cout<<"----"<<"Posesion Equipo 1: "<<posesionE1;
+    cout<<"% Posesion Equipo 2: "<<posesionE2<<"% ----"<<endl;
+
+}
+
 void statspartido::convocados(jugadores** plantel, int equipo) {
     // Elige 11 aleatoriamente de los 26 del plantel
     // Usamos Fisher-Yates parcial sobre índices

@@ -10,13 +10,14 @@ Selecciones::Selecciones(string nombre,string tecnico,int ranking) {
     }
 }
 
-Selecciones::Selecciones(string nombre, string tecnico, int ranking,
+Selecciones::Selecciones(string nombre, string tecnico, int ranking,string federacion,
                          string confederacion,
                          unsigned int gf, unsigned int gc,
                          unsigned int pg, unsigned int pe, unsigned int pp) {
     name    = nombre;
     manager = tecnico;
     rank    = ranking;
+    fede    = federacion;
     conf    = confederacion;
     stats   = statsteam(gf, gc, pg, pe, pp);
     // Distribuye goles históricos uniformemente entre los 26 jugadores
@@ -99,6 +100,11 @@ jugadores* Selecciones::getPlayerByShirt(int n) const {
         if ((int)players[i]->getShirt() == n) return players[i];
     return nullptr;
 }
+string Selecciones::getfederacion()     const{return fede; }
+
+unsigned int Selecciones::getWin() const{return stats.getWins();}
+unsigned int Selecciones::getLose()const{return stats.getLosses();}
+unsigned int Selecciones::getDraws() const{return stats.getDraws();}
 
 void Selecciones::showplayers(){
     for(int i=0;i<26;i++){

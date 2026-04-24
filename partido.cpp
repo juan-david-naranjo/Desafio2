@@ -15,9 +15,11 @@ void Partido::simular(bool esEliminatoria) {
     if (esEliminatoria) {
         simularEliminatoria(); // La que ya tienes con prórroga
         porroga=true;
+        calcularposesion();
         stats.SetPartido(porroga);
     } else {
         simularFaseGrupos();   // La nueva versión sin prórroga
+        calcularposesion();
         stats.SetPartido(porroga);
     }
 }
@@ -44,13 +46,13 @@ void Partido::simularFaseGrupos(){
 
 
     //GOLES PARTIDO
-    int potencialGolesE1 = 10/*generarGoles(lambdaA)*/;
+    int potencialGolesE1 = generarGoles(lambdaA);
     int golesRealesE1 =Golesreales(1,potencialGolesE1);
 
-    int potencialGolesE2 = 10/*generarGoles(lambdaB)*/;
+    int potencialGolesE2 = generarGoles(lambdaB);
     int golesRealesE2 = Golesreales(2,potencialGolesE2);
 
-    equipo1->actualizarstats(golesRealesE1, golesRealesE2);
+    equipo1->actualizarstats(golesRealesE1, golesRealesE2);     //se actualiza las estadisticas de las selecciones
     equipo2->actualizarstats(golesRealesE2, golesRealesE1);
 
     if (golesRealesE1 == golesRealesE2) {
@@ -125,7 +127,15 @@ void Partido::simularEliminatoria(){
 }
 
 void Partido::showstats(){
-    stats.Playerstats();
+
+    stats.show();
+    for(unsigned int i=0;i<3;i++){
+        jugadores *playerE1=stats.Getplayer(1,i);       //obtengo el puntero al jugador en el partido
+        jugadores *playerE2=stats.Getplayer(2,i);
+        cout<<"Goleadores Equipo 1: "<<playerE1->getname()<<" ---- ";
+        cout<<"Goleadores Equipo 2: "<<playerE2->getname()<<endl;
+
+    }
 }
 
 void Partido::Manejarempate(int potencial1,int potencial2){
@@ -139,23 +149,27 @@ void Partido::Manejarempate(int potencial1,int potencial2){
             // cout<<"gano 1 penales "<<endl;
             equipo1->actualizarstats(golesE1,golesE2);
             equipo1->wingame();
+            equipo2->losegame();
             resultado=1;
 
         }else{
             // cout<<"gano 2 penales "<<endl;
             equipo2->actualizarstats(golesE2,golesE1);
-            equipo2->losegame();
+            equipo2->wingame();
+            equipo1->losegame();
             resultado=2;
         }
     }else if(golesE1>golesE2){
         // cout<<"gano equipo 1 porroga"<<endl;
         equipo1->actualizarstats(golesE1,golesE2);
         equipo1->wingame();
+        equipo2->losegame();
         resultado=1;
     }else{
         cout<<"Gano equipo 2 porroga"<<endl;
         equipo2->actualizarstats(golesE2,golesE1);
         equipo2->wingame();
+        equipo1->losegame();
         resultado=2;
     }
     simularfaltas();
@@ -180,6 +194,7 @@ int Partido::Golesreales(short int equipo,int potencialgoles){
             // Acceso por puntero para actualizar al jugador original
             stats.Getplayer(equipo, indice)->gol();      //aqui ya se actualiza los goles del jugador
             stats.addGol(equipo);       //agrega enseguida los goles reales a las estadisticas del partido
+
 
         }
     }
@@ -256,6 +271,12 @@ void Partido::oncetitular(){
     stats.convocados(equipo2->convocados(),2);
 }
 
+void Partido::calcularposesion(){
+    int rank1=equipo1->getRanking();
+    int rank2=equipo2->getRanking();
+    stats.calcularPosesion(rank1,rank2);
+}
+
 
 void Partido::showpartido(){
     // Verifica que los punteros no sean nulos antes de usarlos
@@ -277,6 +298,7 @@ Selecciones* Partido:: getGanador(){
     else return equipo2;
 
 }
+
 
 
 Selecciones *Partido::getEquipo(int equipo){

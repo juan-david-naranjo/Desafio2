@@ -17,10 +17,16 @@ void torneo::cargarDatos(string rutacsv,string datos_jugadores){
     testgrupos();
 }
 
+void torneo::guardarDatos(){
+    gestorarchivos->guardarJugadores(selecciones,48);
+    gestorarchivos->actualizarSelecciones(selecciones,48);
+}
 
 void torneo::simularTorneo(){
+    //funcion que simula todo el torneo
 
-
+    simularFaseGrupos();
+    simularDieciseisavos();
 
 }
 
@@ -59,7 +65,7 @@ void torneo::simularFaseGrupos() {
         //ya sabemos el orden de los partidos entonces unicamente, ecogemos en bloques de 4 grupos, los primeros fixtures por dia
         for (int gp = g0; gp < g0 + 4; gp++) {
             Partido* p = todosLosPartidos[gp * 6 + f];
-            p->simular(false);
+            p->simular(false);              //cuando finaliza el partido las estadisticas se actualizan todas
             // p->showpartido();
             unsigned int E1gol=p->getGol(1);
             unsigned int E2gol=p->getGol(2);
@@ -67,6 +73,19 @@ void torneo::simularFaseGrupos() {
             // cout<<"GOL equipo 1 "<<E1gol<<endl;
             // cout<<"GOL equipo 2 "<<E2gol<<endl;
             grupo[gp]->registrarResultado(f,E1gol,E2gol);        //aqui deberia actualizarse la tabla
+
+
+            //mostramos las estadisticas despues de cada partido
+            Selecciones* ganador = p->getGanador();
+            if (ganador != nullptr)
+                cout << p->getEquipo(1)->getname() << " vs " << p->getEquipo(2)->getname()
+                     << "  ->  Gana: " << ganador->getname() << endl;
+            else
+                cout << p->getEquipo(1)->getname() << " vs " << p->getEquipo(2)->getname()
+                     << "  ->  Empate" << endl;
+            p->showstats();
+
+
         }
         fechas->avanzarDia();
     }
@@ -256,6 +275,7 @@ void torneo::simularFinal(Selecciones** ganadores2) {
 
     cout << ganadores2[0]->getname() << " vs " << ganadores2[1]->getname() << "\n";
     cout << " CAMPEON DEL MUNDO: " << campeon->getname() << "\n";
+
 
     delete fecha;
 }

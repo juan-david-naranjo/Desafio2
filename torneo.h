@@ -21,6 +21,7 @@ class torneo
 public:
     torneo();
     void cargarDatos(string rutacsv,string datos_jugadores);
+    void guardarDatos();
 
     void testgrupos();
 

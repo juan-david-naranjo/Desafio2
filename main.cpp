@@ -22,6 +22,7 @@ int main()
     Mundial_2026.cargarDatos(seleccion,Registroplayers);
     Mundial_2026.simularFaseGrupos();
     Mundial_2026.simularDieciseisavos();
+    Mundial_2026.guardarDatos();
 
 
     cout<<"Hola mundo"<<endl;

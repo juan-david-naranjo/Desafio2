@@ -20,12 +20,8 @@ void jugadores::actualizarstats(unsigned int gol,unsigned int minutos,unsigned i
     faults+=faltas;
 }
 
-void jugadores::getname(){
-    cout<<name;
-    cout<<" ";
-    cout<<lastname;
-    cout<<" ";
-    cout<<shirt<<endl;
+string jugadores::getname() const{
+    return name;
 }
 
 

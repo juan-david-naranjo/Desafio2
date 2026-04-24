@@ -19,7 +19,7 @@ public:
 
     //metodos
     void actualizarstats(unsigned int gol,unsigned int minutos,unsigned int amarilla,unsigned int roja, unsigned int faltas);
-    void getname();
+    string getname() const;
     void gol();
     void amarilla();
     void roja();

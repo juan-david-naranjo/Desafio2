@@ -33,6 +33,7 @@ public:
     void FaltasPlayer(jugadores* player);
     void tryamarilla(unsigned int amarilla,jugadores* player);
     void simularfaltas();
+    void calcularposesion();
 
 
 

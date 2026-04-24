@@ -25,6 +25,7 @@ public:
     // Guarda stats históricas de jugadores de todos los equipos
     // Formato: una línea por jugador  →  pais;camiseta;goles;minutos;amarillas;rojas;faltas
     void guardarJugadores(Selecciones** equipos, int numEquipos) const;
+    void actualizarSelecciones(Selecciones** equipos, int numEquipos) const;
 
     // Carga stats históricas de jugadores desde el archivo de jugadores
     void leerJugadores(Selecciones** equipos, int numEquipos) const;

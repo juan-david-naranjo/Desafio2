@@ -39,6 +39,35 @@ int GestorArchivos::parsearLinea(const string& linea, char delim,
     return count;
 }
 
+void GestorArchivos::actualizarSelecciones(Selecciones** equipos, int numEquipos) const {
+    ofstream archivo(rutaCSV.c_str());
+    if (!archivo.is_open()) {
+        cout << "Error: no se pudo abrir " << rutaCSV << endl;
+        return;
+    }
+
+    // Mismas dos lineas de encabezado que se saltan al leer
+    archivo << "Estadisticas Selecciones Mundial 2026\n";
+    archivo << "Ranking fifa;Pais;Tecnico;Federacion;Confederacion;"
+            << "Goles Favor;Goles Contra;Partidos Ganados;"
+            << "Partidos Empatados;Partidos Perdidos\n";
+
+    for (int i = 0; i < numEquipos; i++) {
+        archivo << equipos[i]->getRanking()           << ";"
+                << equipos[i]->getname()              << ";"
+                << equipos[i]->getmanager()           << ";"
+                << equipos[i]->getfederacion()        << ";"
+                << equipos[i]->getConfederacion()     << ";"
+                << equipos[i]->favorGoals()        << ";"
+                << equipos[i]->counterGoals()       << ";"
+                << equipos[i]->getWin()   << ";"
+                << equipos[i]->getDraws() << ";"
+                << equipos[i]->getLose()  << "\n";
+    }
+
+    archivo.close();
+}
+
 // ─────────────────────────────────────────────────────────────
 // Lee el CSV de selecciones
 // Formato esperado (desde línea 3, delimitador ';'):
@@ -70,6 +99,7 @@ int GestorArchivos::leerSelecciones(Selecciones** equipos, int maxEquipos) const
         int          ranking       = 0;
         string       pais          = campos[1];
         string       tecnico       = campos[2];
+        string       federacion    = campos[3];
         string       confederacion = campos[4];
         unsigned int gf            = 0;
         unsigned int gc            = 0;
@@ -97,7 +127,7 @@ int GestorArchivos::leerSelecciones(Selecciones** equipos, int maxEquipos) const
             if (campos[9][i] >= '0' && campos[9][i] <= '9')
                 pp = pp * 10 + (campos[9][i] - '0');
 
-        equipos[count] = new Selecciones(pais, tecnico, ranking,
+        equipos[count] = new Selecciones(pais, tecnico, ranking,federacion,
                                           confederacion, gf, gc, pg, pe, pp);
         count++;
     }

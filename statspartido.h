@@ -20,6 +20,7 @@ public:
     void addGol(int equipo);
     void SetPartido(bool porroga);
     void calcularPosesion(int rankE1, int rankE2);
+    void show();
 
     //++++++++++++++ |GETTERS|+++++++++++++++
 

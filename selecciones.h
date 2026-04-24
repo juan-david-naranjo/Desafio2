@@ -9,13 +9,14 @@ class Selecciones
     string name;
     string manager;
     int rank;
+    string fede;
     string conf;
     jugadores *players[26];
     statsteam stats;
 
 public:
     Selecciones(string nombre,string tecnico,int ranking);      //constructor
-    Selecciones(string nombre, string tecnico, int ranking,     // constructor con stats CSV
+    Selecciones(string nombre, string tecnico, int ranking, string federacion,     // constructor con stats CSV
                 string confederacion,
                 unsigned int gf, unsigned int gc,
                 unsigned int pg, unsigned int pe, unsigned int pp);
@@ -29,6 +30,9 @@ public:
     void onceTitular(jugadores *headlines[11]);
 
     //getters
+    unsigned int getWin() const;
+    unsigned int getLose()const;
+    unsigned int getDraws() const;
     jugadores** convocados();
     string getname();
     string getmanager();
@@ -36,6 +40,7 @@ public:
     unsigned int counterGoals();
     int getRanking()const;
     string getConfederacion()     const;
+    string getfederacion()     const;       //falto por colocar la federacion
     jugadores* getPlayer(int i)   const;
     jugadores* getPlayerByShirt(int n) const;
 
