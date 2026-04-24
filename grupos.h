@@ -54,7 +54,13 @@ public:
     int           getIndE1(int p)              const;
     int           getIndE2(int p)              const;
     int           getNumPartidos()             const;
-    int           getPuntos(int equipo)            const;
+    int           getPuntos(int equipo)        const;
+
+    // Acceso directo a los clasificados (sin arreglo)
+    Selecciones*  getPrimero()   const;
+    Selecciones*  getSegundo()   const;
+    Selecciones*  getTercero()   const;
+    EntradaTabla  getEntradaTercero() const;   // para comparar terceros entre grupos
 
 
     // Imprime la tabla en consola (formato texto)

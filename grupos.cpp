@@ -116,6 +116,11 @@ int          Grupos::getIndE2(int p)         const { return indE2[p];       }
 int          Grupos::getNumPartidos()        const { return numPartidos;     }
 int Grupos::getPuntos(int equipo) const{return this->getEntradaTabla(equipo).puntos;}
 
+Selecciones* Grupos::getPrimero()          const { return tabla[0].equipo; }
+Selecciones* Grupos::getSegundo()          const { return tabla[1].equipo; }
+Selecciones* Grupos::getTercero()          const { return tabla[2].equipo; }
+EntradaTabla Grupos::getEntradaTercero()   const { return tabla[2];        }
+
 void Grupos::imprimirTabla() const {
     cout << "GRUPO " << letra << endl;
     cout << "Equipo               | PJ | PG | PE | PP | DG | PTS" << endl;
