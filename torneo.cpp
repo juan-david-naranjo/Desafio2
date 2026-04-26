@@ -82,18 +82,9 @@ void torneo::simularFaseGrupos() {
             // Resultado compacto
             cout << "  |  [Grupo " << (char)('A' + gp) << "]  "
                  << nom1 << "  " << E1gol << " - " << E2gol
-                 << "  " << nom2;
-
-            Selecciones* ganador = p->getGanador();
-            if (ganador)
-                cout << "  =>  Gana: " << ganador->getname() << "\n";
-            else
-                cout << "  =>  Empate\n";
+                 << "  " << nom2<<endl;
 
 
-            // Estadisticas del partido: cabecera
-            cout << "  |-------------------- Stats jugadores destacados ";
-            cout << "---------------------+\n";
 
             // // Mostrar los 11 titulares de cada equipo con sus stats
             // // usando un formato de tabla ASCII compacto
@@ -311,17 +302,14 @@ void torneo::simularDieciseisavos() {
         Partido* p = new Partido(E1, E2, fechas);
         p->simular(true);
         ganadores[i] = p->getGanador();
-        int E1gol=p->getGol(1);
-        int E2gol=p->getGol(2);
+        // int E1gol=p->getGol(1);
+        // int E2gol=p->getGol(2);
 
-        string nom1 = E1->getname(); while ((int)nom1.size() < 10) nom1 += ' ';
-        string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-        cout<< nom1 << "  " << E1gol << " - " << E2gol
-             << "  " << nom2<<endl;
+        // string nom1 = E1->getname(); while ((int)nom1.size() < 10) nom1 += ' ';
+        // string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
+        // cout<< nom1 << "  " << E1gol << " - " << E2gol
+        //      << "  " << nom2<<endl;
 
-        // Estadisticas del partido: cabecera
-        cout << "  |----------- Stats del Partido ";
-        cout << "----------------------------+\n";
 
         // // Mostrar los 11 titulares de cada equipo con sus stats
         // // usando un formato de tabla ASCII compacto
@@ -361,15 +349,15 @@ void torneo::simularoctavos(Selecciones** ganadores16) {
         ganadores8[i] = partido->getGanador();
         delete partido;
 
-        string nom1 = E1->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
-        string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-        cout << "  | " << nom1 << " vs " << nom2
-             << " =>  " << ganadores8[i]->getname() << "\n";
-         cout << "  |----------------Stats del Partido------------------------- \n";
-        // Llamada al metodo existente para stats completos
+        // string nom1 = E1->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
+        // string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
+        // cout << "  | " << nom1 << " vs " << nom2
+        //      << " =>  " << ganadores8[i]->getname() << "\n";
+        //  cout << "  |----------------Stats del Partido------------------------- \n";
+        // // Llamada al metodo existente para stats completos
         cout << "  |--------------------------------------------------------+\n";
         partido->showpartido();
-        cout << "  |\n";
+
     }
     cout << "+========================================================+\n";
 
@@ -397,15 +385,14 @@ void torneo::simularCuartos(Selecciones** ganadores8) {
         ganadores4[i] = partido->getGanador();
         delete partido;
 
-        string nom1 = E1->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
-        string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-        cout << "  | " << nom1 << " vs " << nom2
-             << " =>  " << ganadores4[i]->getname() << "\n";
-        cout << "  |----------------Stats del Partido------------------------- \n";
+        // string nom1 = E1->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
+        // string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
+        // cout << "  | " << nom1 << " vs " << nom2
+        //      << " =>  " << ganadores4[i]->getname() << "\n";
+        // cout << "  |----------------Stats del Partido------------------------- \n";
         // Llamada al metodo existente para stats completos
         cout << "  |--------------------------------------------------------+\n";
         partido->showpartido();
-        cout << "  |\n";
 
     }
     cout << "+========================================================+\n";
@@ -434,12 +421,12 @@ void torneo::simularSemis(Selecciones** ganadores4) {
         perdedores2[i] = (ganadores2[i] == E1) ? E2 : E1;
         delete partido;
 
-        string nom1 = E1->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
-        string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-        cout << "  | " << nom1 << " vs " << nom2
-             << " =>  " << ganadores2[i]->getname() << "\n";
+        // string nom1 = E1->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
+        // string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
+        // cout << "  | " << nom1 << " vs " << nom2
+        //      << " =>  " << ganadores2[i]->getname() << "\n";
 
-        cout << "  |----------------Stats del Partido------------------------- \n";
+        // cout << "  |----------------Stats del Partido------------------------- \n";
         // Llamada al metodo existente para stats completos
         cout << "  |--------------------------------------------------------+\n";
         partido->showpartido();
@@ -467,11 +454,11 @@ void torneo::simularTercerPuesto(Selecciones** perdedores2) {
     Selecciones* tercero = partido->getGanador();
     delete partido;
 
-    string nom1 = perdedores2[0]->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
-    string nom2 = perdedores2[1]->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-    cout << "  | " << nom1 << " vs " << nom2
-         << " =>  " << tercero->getname() << "\n";
-    cout << "  |----------------Stats del Partido------------------------- \n";
+    // string nom1 = perdedores2[0]->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
+    // string nom2 = perdedores2[1]->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
+    // cout << "  | " << nom1 << " vs " << nom2
+    //      << " =>  " << tercero->getname() << "\n";
+    // cout << "  |----------------Stats del Partido------------------------- \n";
     // Llamada al metodo existente para stats completos
     cout << "  |--------------------------------------------------------+\n";
     partido->showpartido();
@@ -494,12 +481,12 @@ void torneo::simularFinal(Selecciones** ganadores2) {
     Selecciones* campeon = partido->getGanador();
     delete partido;
 
-    string nom1 = ganadores2[0]->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
-    string nom2 = ganadores2[1]->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-    cout << "  | " << nom1 << " vs " << nom2
-         << " =>  " << campeon->getname() << "\n";
+    // string nom1 = ganadores2[0]->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
+    // string nom2 = ganadores2[1]->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
+    // cout << "  | " << nom1 << " vs " << nom2
+    //      << " =>  " << campeon->getname() << "\n";
 
-    cout << "  |----------------Stats del Partido------------------------- \n";
+    // cout << "  |----------------Stats del Partido------------------------- \n";
     // Llamada al metodo existente para stats completos
     cout << "  |--------------------------------------------------------+\n";
     partido->showpartido();

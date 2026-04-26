@@ -16,8 +16,8 @@ void Partido::simular(bool esEliminatoria) {
     int Rank1=equipo1->getRanking();
     int Rank2=equipo2->getRanking();
     if (esEliminatoria) {
-        simularEliminatoria(); // La que ya tienes con prórroga
-        porroga=true;
+        simularEliminatoria(); // partido con porroga
+        // porroga=true;
         stats.SetPartido(porroga);
         stats.calcularPosesion(Rank1,Rank2);
 
@@ -118,6 +118,12 @@ void Partido::simularEliminatoria(){
     // Goles directamente desde Poisson
     int golesRealesE1 = generarGoles(lambdaA);
     int golesRealesE2 = generarGoles(lambdaB);
+    // Asignar goles a jugadores individuales
+    asignarGolesJugadores(1, golesRealesE1);
+    asignarGolesJugadores(2, golesRealesE2);
+
+    equipo1->actualizarstats(golesRealesE1, golesRealesE2);
+    equipo2->actualizarstats(golesRealesE2, golesRealesE1);
 
 
     if(golesRealesE1==golesRealesE2){
@@ -168,8 +174,12 @@ void Partido::Manejarempate(int golesE1Reg, int golesE2Reg){
     double lambdaA = mu * pow(gfA / mu, alpha) * pow(gcB / mu, beta) * 0.33;
     double lambdaB = mu * pow(gfB / mu, alpha) * pow(gcA / mu, beta) * 0.33;
 
-    int golesE1 = golesE1Reg + generarGoles(lambdaA);
-    int golesE2 = golesE2Reg + generarGoles(lambdaB);
+    int golesE1 = /*golesE1Reg + */generarGoles(lambdaA);
+    int golesE2 = /*golesE2Reg +*/ generarGoles(lambdaB);
+    // Asignar goles a jugadores individuales en la porroga
+
+    equipo1->actualizarstats(golesE1, golesE2);
+    equipo2->actualizarstats(golesE2, golesE1);
 
     if(golesE1==golesE2){
         // Penales: 50/50
@@ -210,7 +220,8 @@ void Partido::asignarGolesJugadores(short int equipo, int numGoles){
         int indice = rand() % 11;
         jugadores* jug = stats.Getplayer(equipo, indice);
         if (jug) {
-            jug->gol();
+            jug->gol();         //se actualiza de manera generallas estadistica
+            stats.registrarEvento(equipo, indice, 'g'); // partido
             stats.addGol(equipo);
         }
     }
@@ -234,33 +245,38 @@ void Partido::simularfaltas(){
     //simula las faltas del equipo 1 y equipo 2
     //faltas equipo 1
     for(unsigned short int i=0;i<11;i++){
-        FaltasPlayer(stats.Getplayer(1,i));
+        FaltasPlayer(1,stats.Getplayer(1,i),i);
     }
     //faltas equipo 2
     for(unsigned short int i=0;i<11;i++){
-        FaltasPlayer(stats.Getplayer(2,i));
+        FaltasPlayer(2,stats.Getplayer(2,i),i);
     }
 }
 
 
 
-void Partido::FaltasPlayer(jugadores* player) {
+void Partido::FaltasPlayer(int equipo,jugadores* player,int indice) {
     unsigned int amarilla=player->getamarilla();
 
     // 1. Lógica de Faltas (13%, 2.75%, 0.7%)
     // Usamos 10000 para precisión de decimales
     if (rand() % 10000 < 1300) {
         player->fault();
-        tryamarilla(amarilla,player);
+        stats.registrarEvento(equipo, indice, 'f');
+        tryamarilla(amarilla,player,equipo,indice);
 
         if (rand() % 10000 < 275)  {
             player->fault();
             player->amarilla();
-            tryamarilla(amarilla,player);
+            stats.registrarEvento(equipo, indice, 'f');
+            stats.registrarEvento(equipo, indice, 'a');
+            tryamarilla(amarilla,player,equipo,indice);
 
             if (rand() % 10000< 70){
                 player->fault();
                 player->amarilla();
+                stats.registrarEvento(equipo, indice, 'f');
+                stats.registrarEvento(equipo, indice, 'a');
 
             }
         }
@@ -269,16 +285,18 @@ void Partido::FaltasPlayer(jugadores* player) {
 
 }
 
-void Partido::tryamarilla(unsigned int amarilla,jugadores* player){
+void Partido::tryamarilla(unsigned int amarilla,jugadores* player,int equipo,int indice){
     int rTarjeta = rand() % 10000;
     if (amarilla == 0) {
         if (rTarjeta < 600) { // 6%
             player->amarilla();
+            stats.registrarEvento(equipo, indice, 'a');
             return;
         }
     }else if (amarilla == 1) {
         if (rTarjeta < 115) { // 1.15%
-            player->amarilla(); // Esto debería activar la roja automáticamente en tu clase Jugador
+            player->amarilla(); // Esto debería activar la roja automáticamente en la clase Jugador
+            stats.registrarEvento(equipo, indice, 'r');
             return;
         }
     }else return;
@@ -303,12 +321,76 @@ void Partido::oncetitular(){
 void Partido::showpartido(){
     // Verifica que los punteros no sean nulos antes de usarlos
 
-        cout << "  |                "<<equipo1->getname() << " vs " << equipo2->getname() <<"          "<< endl;
-        cout << "  |"<< "DT: " << equipo1->getmanager() << " - " <<" | DT: " << equipo2->getmanager() << endl;
-        cout << "  |"<<"goles : "<<stats.getgol(1)<<" - ";
-        cout <<"goles : "<<stats.getgol(2)<<endl;
-        cout << "  |"<<"posesion : "<<stats.getPosesion(1)<<" - ";
-        cout<< "  "<<"posesion : "<<stats.getPosesion(2)<<endl;
+    // Nombres y DTs
+    string nom1 = equipo1->getname(); while((int)nom1.size() < 20) nom1 += ' ';
+    string nom2 = equipo2->getname(); while((int)nom2.size() < 20) nom2 += ' ';
+    string dt1  = equipo1->getmanager(); while((int)dt1.size() < 20) dt1 += ' ';
+    string dt2  = equipo2->getmanager(); while((int)dt2.size() < 20) dt2 += ' ';
+
+    cout << "  |  " << nom1 << "  vs  " << nom2 << "  |\n";
+    cout << "  |  DT: " << dt1 << "      DT: " << dt2 << "  |\n";
+    cout << "  +--------------------------------------------------+\n";
+
+    // Resultado
+    cout << "  |  GOLES   :  " << stats.getgol(1)
+         << "  -  "            << stats.getgol(2) << "\n";
+    cout << "  |  POSESION:  " << stats.getPosesion(1) << "%"
+         << "  -  "            << stats.getPosesion(2) << "%\n";
+
+    // Prorroga
+    if (porroga) {
+        if (resultado == 0)
+            cout << "  |  >> Empate en prorroga -> PENALES\n";
+        else
+            cout << "  |  >> Se definio en prorroga\n";
+    }
+    // Ganador
+    Selecciones* gan = getGanador();
+    if (gan)
+        cout << "  |  GANADOR : " << gan->getname() << "\n";
+    else
+        cout << "  |  EMPATE  (fase de grupos)\n";
+
+    cout << "  +--------------------------------------------------+\n";
+
+    // Goleadores, tarjetas y faltas usando getStatsJugador
+    cout << "  |  GOLEADORES:\n";
+    bool hayGoles = false;
+    for (int eq = 1; eq <= 2; eq++) {
+        for (int i = 0; i < 11; i++) {
+            jugadores* jug = stats.Getplayer(eq, i);
+            if (!jug) continue;
+            const StatsJugadorPartido& s = stats.getStatsJugador(eq, i);
+            if (s.goles > 0) {
+                cout << "  |    * " << jug->getname() << " ("
+                     << (eq==1 ? equipo1->getname() : equipo2->getname())
+                     << ") - " << s.goles << " gol(es)\n";
+                hayGoles = true;
+            }
+        }
+    }
+    if (!hayGoles) cout << "  |    Sin goles\n";
+
+    cout << "  |  TARJETAS Y FALTAS:\n";
+    bool hayTarjetas = false;
+    for (int eq = 1; eq <= 2; eq++) {
+        for (int i = 0; i < 11; i++) {
+            jugadores* jug = stats.Getplayer(eq, i);
+            if (!jug) continue;
+            const StatsJugadorPartido& s = stats.getStatsJugador(eq, i);
+            if (s.amarillas > 0 || s.rojas > 0 || s.faltas > 0) {
+                cout << "  |    " << jug->getname()
+                << " - " << s.faltas    << " falta(s)"
+                << "  "   << s.amarillas << " amarilla(s)"
+                << "  "   << s.rojas     << " roja(s)\n";
+                hayTarjetas = true;
+            }
+        }
+    }
+    if (!hayTarjetas) cout << "  |    Sin tarjetas\n";
+    cout << "  +--------------------------------------------------+\n";
+
+
 
 
 }

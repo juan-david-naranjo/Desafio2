@@ -2,6 +2,16 @@
 #define STATSPARTIDO_H
 #include "jugadores.h"
 
+struct StatsJugadorPartido {                //structura para alamacenar datos de los jugadores X partidpo
+    unsigned int goles     = 0;
+    unsigned int amarillas = 0;
+    unsigned int rojas     = 0;
+    unsigned int faltas    = 0;
+};
+
+
+
+
 class statspartido {
     unsigned int golesE1;
     unsigned int golesE2;
@@ -9,6 +19,10 @@ class statspartido {
     float posesionE2;
     jugadores* titularesE1[11];
     jugadores* titularesE2[11];
+
+    //Estadisticas Jugadores X partido
+    StatsJugadorPartido statsE1[11];
+    StatsJugadorPartido statsE2[11];
 
 public:
     statspartido();
@@ -22,6 +36,11 @@ public:
     void calcularPosesion(int rankE1, int rankE2);
     void show();
 
+
+    // Registrar eventos del partido
+    void registrarEvento(int equipo, int indice, char tipo);
+    // tipo: 'g'=gol, 'a'=amarilla, 'r'=roja, 'f'=falta
+
     //++++++++++++++ |GETTERS|+++++++++++++++
 
     // unsigned int getgol(unsigned short int ocpion);
@@ -29,6 +48,7 @@ public:
     float getPosesion(int equipo) const;
     void showconvocados() const;
     jugadores*   Getplayer(int equipo, int indice) const;
+     const StatsJugadorPartido& getStatsJugador(int equipo, int indice)  const;
     // jugadores *Getplayer(unsigned int team,unsigned int indice);
 
 

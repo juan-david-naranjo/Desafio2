@@ -8,9 +8,30 @@ statspartido::statspartido() {
     for (int i = 0; i < 11; i++) {
         titularesE1[i] = nullptr;
         titularesE2[i] = nullptr;
+        statsE1[i] = {0, 0, 0, 0};
+        statsE2[i] = {0, 0, 0, 0};
     }
     Medidor::registrarCreacion("StatsPartido",this);
 }
+
+
+
+void statspartido::registrarEvento(int equipo, int indice, char tipo) {
+    StatsJugadorPartido& s = (equipo == 1) ? statsE1[indice] : statsE2[indice];
+    switch(tipo) {
+    case 'g': s.goles++;     break;
+    case 'a': s.amarillas++; break;
+    case 'r': s.rojas++;     break;
+    case 'f': s.faltas++;    break;
+    }
+}
+
+
+const StatsJugadorPartido& statspartido::getStatsJugador(int equipo, int indice) const {
+    return (equipo == 1) ? statsE1[indice] : statsE2[indice];
+}
+
+
 
 void statspartido::show(){
 
