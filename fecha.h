@@ -1,6 +1,7 @@
 #ifndef FECHA_H
 #define FECHA_H
 #include <string>
+#include "medidor.h"
 
 using namespace std;
 class Fecha
@@ -29,6 +30,8 @@ public:
     Fecha& operator++();
     void avanzarDia();
     string toString() const;
+
+    ~Fecha();   //destructor
 };
 
 #endif // FECHA_H

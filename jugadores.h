@@ -1,6 +1,7 @@
 #ifndef JUGADORES_H
 #define JUGADORES_H
 #include <string>
+#include "medidor.h"
 #include <iostream>
 using namespace std;
 
@@ -19,7 +20,7 @@ public:
 
     //metodos
     void actualizarstats(unsigned int gol,unsigned int minutos,unsigned int amarilla,unsigned int roja, unsigned int faltas);
-    string getname() const;
+    const string& getname() const;
     void gol();
     void amarilla();
     void roja();

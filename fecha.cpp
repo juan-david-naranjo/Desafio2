@@ -1,12 +1,14 @@
 #include "fecha.h"
 
 Fecha::Fecha() {
+    Medidor::registrarCreacion("Partido", this);
     mes=0;
     dia=0;
     anio=0;
 }
 
 Fecha::Fecha(unsigned int year,unsigned int month,unsigned int day) {
+    Medidor::registrarCreacion("Partido", this);
     mes=month;
     dia=day;
     anio=year;
@@ -75,4 +77,4 @@ void Fecha::avanzarDia() {
     // Si no, por ahora un simple dia++ funciona para la simulacion.
 }
 
-
+Fecha::~Fecha(){Medidor::registrarDestruccion("Fecha", this);}

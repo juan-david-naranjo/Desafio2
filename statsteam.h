@@ -1,6 +1,7 @@
 #ifndef STATSTEAM_H
 #define STATSTEAM_H
 #include <iostream>
+#include "medidor.h"
 using namespace std;
 
 class statsteam {

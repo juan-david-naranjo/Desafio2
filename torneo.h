@@ -5,7 +5,8 @@
 #include "grupos.h"
 #include "gestorarchivos.h"
 #include <algorithm>
- #include <iomanip>
+
+// #include <iomanip>
 
 
 using namespace std;
@@ -42,9 +43,18 @@ public:
     void simularTercerPuesto(Selecciones** perdedores2);
     void simularFinal(Selecciones** ganadores2);
 
+
+
     void prepararSorteo();
 
+    void tamanioTorneo();
     void imprimirGrupos() const;
+    void limpiarConsola() const;
+    void pausar(const string& mensaje) const;
+    char getGrupoDeEquipo(Selecciones* e);
+    bool cruceValido(Selecciones* e1, Selecciones* e2);
+
+    ~torneo();
 
 };
 

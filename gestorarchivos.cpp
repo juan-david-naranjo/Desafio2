@@ -3,6 +3,7 @@
 GestorArchivos::GestorArchivos(const string& csv, const string& jugadores) {
     rutaCSV       = csv;
     rutaJugadores = jugadores;
+    Medidor::registrarCreacion("GestorArchivos", this);
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -235,4 +236,4 @@ void GestorArchivos::leerJugadores(Selecciones** equipos, int numEquipos) const 
     archivo.close();
 }
 
-GestorArchivos::~GestorArchivos() {}
+GestorArchivos::~GestorArchivos() {Medidor::registrarDestruccion("GestorArchivos", this);}

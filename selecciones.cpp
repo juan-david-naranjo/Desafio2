@@ -8,6 +8,7 @@ Selecciones::Selecciones(string nombre,string tecnico,int ranking) {
     for(unsigned int i=0;i<26;i++){
         players[i]= new jugadores("Nombre"+to_string(i),"apellido"+to_string(i),i);
     }
+    Medidor::registrarCreacion("Selecciones",this);
 }
 
 Selecciones::Selecciones(string nombre, string tecnico, int ranking,string federacion,
@@ -70,7 +71,7 @@ jugadores** Selecciones::convocados(){
     return players;
 }
 
-string Selecciones::getname(){
+const string &Selecciones::getname() const{
     return name;
 }
 
@@ -117,7 +118,8 @@ void Selecciones::showstats(){
 Selecciones::~Selecciones(){
     for (int i = 0; i < 26; ++i) {
     delete players[i];
+        Medidor::registrarDestruccion("Partido",players[i]);
     }
-
+    Medidor::registrarDestruccion("Selecciones",this);
 }
 

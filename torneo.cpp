@@ -6,6 +6,7 @@ torneo::torneo() {
     gestorarchivos=nullptr;
     for(int i = 0; i < 48; i++) selecciones[i] = nullptr;
     for(int i = 0; i < 12; i++) grupo[i] = nullptr;
+    Medidor::registrarCreacion("Torneo",this);
 }
 
 
@@ -14,6 +15,7 @@ void torneo::cargarDatos(string rutacsv,string datos_jugadores){
     gestorarchivos=new GestorArchivos(rutacsv,datos_jugadores);
     gestorarchivos->leerSelecciones(selecciones,48);
     sortearGrupos();   // sorteo real con restricciones de confederacion y USA en Grupo A
+    pausar("Sorteo Completado.");
     // testgrupos();   // solo para debug rapido sin sorteo
 }
 
@@ -26,6 +28,7 @@ void torneo::simularTorneo(){
     //funcion que simula todo el torneo
 
     simularFaseGrupos();
+    pausar("Fase de grupos completada.");
     simularDieciseisavos();
 
 }
@@ -84,35 +87,22 @@ void torneo::simularFaseGrupos() {
             else
                 cout << "  =>  Empate\n";
 
+
             // Estadisticas del partido: cabecera
-            cout << "  |    +-- Stats jugadores destacados ";
-            cout << "----------------------------+\n";
+            cout << "  |-------------------- Stats jugadores destacados ";
+            cout << "---------------------+\n";
 
-            // Mostrar los 11 titulares de cada equipo con sus stats
-            // usando un formato de tabla ASCII compacto
-            cout << "  |    | # Jugador                Goles  Min  Amar  Falt |\n";
-            cout << "  |    +--------------------------------------------------+\n";
-
-            for (int eq = 1; eq <= 2; eq++) {
-                string nomEq = p->getEquipo(eq)->getname();
-                while ((int)nomEq.size() < 20) nomEq += ' ';
-                cout << "  |    | ** " << nomEq
-                     << " (equipo " << eq << ")             |\n";
-                for (int k = 0; k < 11; k++) {
-                    // Accedemos via showstats indirectamente: necesitamos
-                    // los datos por jugador — los imprimimos linea a linea
-                    // Solo mostramos jugadores con alguna stat notable
-                    // (esto llama showstats internamente via p->showstats())
-                    // Aqui hacemos una linea por jugador con formato
-                    // El objeto Partido expone getGol pero no jugador directo;
-                    // la impresion detallada la delega showstats()
-                }
-                // Como showstats() imprime en su propio formato, lo llamamos
-                // y avisamos al usuario:
-            }
-            // Llamada al metodo existente para stats completos
-            cout << "  |    +--------------------------------------------------+\n";
-            p->showstats();
+            // // Mostrar los 11 titulares de cada equipo con sus stats
+            // // usando un formato de tabla ASCII compacto
+            // cout << "  |    | # Jugador                Goles  Min  Amar  Falt |\n";
+            // cout << "  |    +--------------------------------------------------+\n";
+            //     // Como showstats() imprime en su propio formato, lo llamamos
+            //     // y avisamos al usuario:
+            // // Llamada al metodo existente para stats completos
+            // cout << "  |    +--------------------------------------------------+\n";
+            // p->showstats();
+            cout << "  |----------------------------------------------------------+\n";
+            p->showpartido();
             cout << "  |\n";
         }
         cout << "  +------------------------------------------------------+\n";
@@ -135,14 +125,33 @@ void torneo::simularFaseGrupos() {
 void torneo::simularDieciseisavos() {
 
     Selecciones* primeros[12];
-    Selecciones* segundos[12];
+    // Selecciones* segundos[12];
+    EntradaTabla segundos[12];
     EntradaTabla terceros[12];
 
     for (int i = 0; i < 12; i++) {
         primeros[i] = grupo[i]->getPrimero();
-        segundos[i] = grupo[i]->getSegundo();
+        segundos[i] = grupo[i]->getEntradaSegundo();
         terceros[i] = grupo[i]->getEntradaTercero();
+
     }
+    //como los peores 4 segundos se enfentan a los restantes 1eros
+    //intercambiamos los mejores 12 segundos
+    for (int i = 0; i < 11; i++) {
+        for (int j = 0; j < 11 - i; j++) {
+            bool intercambiar =
+                segundos[j].puntos < segundos[j+1].puntos ||
+                (segundos[j].puntos == segundos[j+1].puntos &&
+                 segundos[j].dg     < segundos[j+1].dg);
+            if (intercambiar) {
+                EntradaTabla tmp = segundos[j];
+                segundos[j]      = segundos[j+1];
+                segundos[j+1]    = tmp;
+            }
+        }
+    }
+
+    //Intercambiamos a los mejores 8 terceros
 
     for (int i = 0; i < 11; i++) {
         for (int j = 0; j < 11 - i; j++) {
@@ -158,22 +167,120 @@ void torneo::simularDieciseisavos() {
         }
     }
 
-    Selecciones* clasificados[32];
-    for (int i = 0; i < 12; i++) clasificados[i]      = primeros[i];
-    for (int i = 0; i < 12; i++) clasificados[i + 12] = segundos[i];
-    for (int i = 0; i < 8;  i++) clasificados[i + 24] = terceros[i].equipo;
 
     cout << "\n+========================================================+\n";
     cout << "|           8 MEJORES TERCEROS CLASIFICADOS              |\n";
     cout << "+========================================================+\n";
     for (int i = 0; i < 8; i++) {
-        string nom = clasificados[i+24]->getname();
+        string nom = terceros[i].equipo->getname();
         while ((int)nom.size() < 24) nom += ' ';
         cout << "  | " << (i+1) << ". " << nom
              << "  Pts: " << terceros[i].puntos
              << "  DG: "  << terceros[i].dg << "\n";
     }
     cout << "+========================================================+\n";
+
+    // 5. Armar 16 cruces con backtracking  Condicion faltante
+    // Regla 1: primeros[0..7]  vs terceros[0..7]  (8 partidos)
+    // Regla 2: primeros[8..11] vs peores segundos[8..11] (4 partidos)
+    // Regla 3: mejores segundos[0..7] entre si (4 partidos)
+    // Regla 4: No pueden cruzarse equipos del mismo grupo
+    Selecciones* E1s[16];
+    Selecciones* E2s[16];
+    bool usadoPrimero[12] = {false};
+    bool usadoSegundo[12] = {false};
+    bool usadoTercero[8]  = {false};
+
+    // Regla 1: primeros vs terceros
+    int partidoIdx = 0;
+    for (int i = 0; i < 12 && partidoIdx < 8; i++) {
+        if (usadoPrimero[i]) continue;
+        for (int j = 0; j < 8; j++) {
+            if (usadoTercero[j]) continue;
+            if (cruceValido(primeros[i],terceros[j].equipo)) {
+                E1s[partidoIdx] = primeros[i];
+                E2s[partidoIdx] = terceros[j].equipo;
+                usadoPrimero[i] = true;
+                usadoTercero[j] = true;
+                partidoIdx++;
+                break;
+            }
+        }
+        // Pasada 2: fallback sin restriccion
+        if (!usadoPrimero[i]) {
+            for (int j = 0; j < 8; j++) {
+                if (usadoTercero[j]) continue;
+                E1s[partidoIdx] = primeros[i];
+                E2s[partidoIdx] = terceros[j].equipo;
+                usadoPrimero[i] = true;
+                usadoTercero[j] = true;
+                partidoIdx++;
+                cout << "  [!] Fallback: " << primeros[i]->getname()
+                     << " vs equipo del mismo grupo (sin alternativa)\n";
+                break;
+            }
+        }
+    }
+
+    // Regla 2: primeros restantes vs peores 4 segundos (indices 8..11)
+    for (int i = 0; i < 12 && partidoIdx < 12; i++) {
+        if (usadoPrimero[i]) continue;
+        for (int j = 8; j < 12; j++) {
+            if (usadoSegundo[j]) continue;
+            if (cruceValido(primeros[i],segundos[j].equipo)) {
+                E1s[partidoIdx] = primeros[i];
+                E2s[partidoIdx] = segundos[j].equipo;
+                usadoPrimero[i] = true;
+                usadoSegundo[j] = true;
+                partidoIdx++;
+                break;
+            }
+        }
+        // Pasada 2: fallback
+        if (!usadoPrimero[i]) {
+            for (int j = 8; j < 12; j++) {
+                if (usadoSegundo[j]) continue;
+                E1s[partidoIdx] = primeros[i];
+                E2s[partidoIdx] = segundos[j].equipo;
+                usadoPrimero[i] = true;
+                usadoSegundo[j] = true;
+                partidoIdx++;
+                cout << "  [!] Fallback: " << primeros[i]->getname()
+                     << " vs equipo del mismo grupo (sin alternativa)\n";
+                break;
+            }
+        }
+    }
+
+    // Regla 3: mejores 8 segundos entre si (indices 0..7)
+    for (int i = 0; i < 8 && partidoIdx < 16; i++) {
+        if (usadoSegundo[i]) continue;
+        for (int j = i + 1; j < 8; j++) {
+            if (usadoSegundo[j]) continue;
+            if (cruceValido(segundos[i].equipo,segundos[j].equipo)) {
+                E1s[partidoIdx] = segundos[i].equipo;
+                E2s[partidoIdx] = segundos[j].equipo;
+                usadoSegundo[i] = true;
+                usadoSegundo[j] = true;
+                partidoIdx++;
+                break;
+            }
+        }
+        // Pasada 2: fallback
+        if (!usadoSegundo[i]) {
+            for (int j = i + 1; j < 8; j++) {
+                if (usadoSegundo[j]) continue;
+                E1s[partidoIdx] = segundos[i].equipo;
+                E2s[partidoIdx] = segundos[j].equipo;
+                usadoSegundo[i] = true;
+                usadoSegundo[j] = true;
+                partidoIdx++;
+                cout << "  [!] Fallback: " << segundos[i].equipo->getname()
+                     << " vs equipo del mismo grupo (sin alternativa)\n";
+                break;
+            }
+        }
+    }
 
     cout << "\n+========================================================+\n";
     cout << "|            DIECISEISAVOS DE FINAL                      |\n";
@@ -182,21 +289,39 @@ void torneo::simularDieciseisavos() {
     Fecha* fechas = new Fecha(2026, 7, 1);
 
     for (int i = 0; i < 16; i++) {
-        Selecciones* E1 = clasificados[i];
-        Selecciones* E2 = clasificados[31 - i];
+        Selecciones* E1 = E1s[i];
+        Selecciones* E2 = E2s[i];
+
         Partido* p = new Partido(E1, E2, fechas);
         p->simular(true);
         ganadores[i] = p->getGanador();
+        int E1gol=p->getGol(1);
+        int E2gol=p->getGol(2);
 
-        string nom1 = E1->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
+        string nom1 = E1->getname(); while ((int)nom1.size() < 10) nom1 += ' ';
         string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-        cout << "  | " << nom1 << " vs " << nom2
-             << " =>  " << ganadores[i]->getname() << "\n";
+        cout<< nom1 << "  " << E1gol << " - " << E2gol
+             << "  " << nom2<<endl;
+
+        // Estadisticas del partido: cabecera
+        cout << "  |----------- Stats del Partido ";
+        cout << "----------------------------+\n";
+
+        // // Mostrar los 11 titulares de cada equipo con sus stats
+        // // usando un formato de tabla ASCII compacto
+        // cout << "  |    | # Jugador                Goles  Min  Amar  Falt |\n";
+        // cout << "  |    +--------------------------------------------------+\n";
+
+        // Llamada al metodo existente para stats completos
+        cout << "  |-----------------------------------------------------+\n";
+        p->showpartido();
+        cout << "  |\n";
         delete p;
     }
     cout << "+========================================================+\n";
     delete fechas;
 
+    pausar("Diesisavos De Final Completado.");
     simularoctavos(ganadores);
 }
 
@@ -222,10 +347,16 @@ void torneo::simularoctavos(Selecciones** ganadores16) {
         string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
         cout << "  | " << nom1 << " vs " << nom2
              << " =>  " << ganadores8[i]->getname() << "\n";
+         cout << "  |----------------Stats del Partido------------------------- \n";
+        // Llamada al metodo existente para stats completos
+        cout << "  |--------------------------------------------------------+\n";
+        partido->showpartido();
+        cout << "  |\n";
     }
     cout << "+========================================================+\n";
 
     delete fecha;
+    pausar("Octavos De Final Completado");
     simularCuartos(ganadores8);
 }
 
@@ -250,10 +381,19 @@ void torneo::simularCuartos(Selecciones** ganadores8) {
         string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
         cout << "  | " << nom1 << " vs " << nom2
              << " =>  " << ganadores4[i]->getname() << "\n";
+        cout << "  | " << nom1 << " vs " << nom2
+             << " =>  " << ganadores8[i]->getname() << "\n";
+        cout << "  |----------------Stats del Partido------------------------- \n";
+        // Llamada al metodo existente para stats completos
+        cout << "  |--------------------------------------------------------+\n";
+        partido->showpartido();
+        cout << "  |\n";
+
     }
     cout << "+========================================================+\n";
 
     delete fecha;
+    pausar("Cuartos de Final Completados.");
     simularSemis(ganadores4);
 }
 
@@ -279,12 +419,21 @@ void torneo::simularSemis(Selecciones** ganadores4) {
         string nom1 = E1->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
         string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
         cout << "  | " << nom1 << " vs " << nom2
-             << " =>  " << ganadores2[i]->getname() << "\n";
+             << " =>  " << ganadores4[i]->getname() << "\n";
+
+        cout << "  |----------------Stats del Partido------------------------- \n";
+        // Llamada al metodo existente para stats completos
+        cout << "  |--------------------------------------------------------+\n";
+        partido->showpartido();
+        cout << "  |\n";
+
     }
     cout << "+========================================================+\n";
 
     delete fecha;
+    pausar("Semifinales Completadas");
     simularTercerPuesto(perdedores2);
+    pausar("Tercer Puesto Completada.");
     simularFinal(ganadores2);
 }
 
@@ -302,7 +451,13 @@ void torneo::simularTercerPuesto(Selecciones** perdedores2) {
 
     string nom1 = perdedores2[0]->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
     string nom2 = perdedores2[1]->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-    cout << "  | " << nom1 << " vs " << nom2 << "\n";
+    cout << "  | " << nom1 << " vs " << nom2
+         << " =>  " << tercero->getname() << "\n";
+    cout << "  |----------------Stats del Partido------------------------- \n";
+    // Llamada al metodo existente para stats completos
+    cout << "  |--------------------------------------------------------+\n";
+    partido->showpartido();
+    cout << "  |\n";
     cout << "  |  3er Puesto: " << tercero->getname() << "\n";
     cout << "+========================================================+\n";
 
@@ -323,7 +478,14 @@ void torneo::simularFinal(Selecciones** ganadores2) {
 
     string nom1 = ganadores2[0]->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
     string nom2 = ganadores2[1]->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-    cout << "  | " << nom1 << " vs " << nom2 << "\n";
+    cout << "  | " << nom1 << " vs " << nom2
+         << " =>  " << campeon->getname() << "\n";
+
+    cout << "  |----------------Stats del Partido------------------------- \n";
+    // Llamada al metodo existente para stats completos
+    cout << "  |--------------------------------------------------------+\n";
+    partido->showpartido();
+    cout << "  |\n";
     cout << "+========================================================+\n";
     cout << "|  CAMPEON DEL MUNDO 2026: ";
     string camp = campeon->getname();
@@ -558,14 +720,14 @@ void torneo::prepararSorteo() {
         selecciones[0] = usa;
     }
 
-    // Verificacion
-    cout << "Anfitrion confirmado en slot 0 (Grupo A): "
-         << selecciones[0]->getname()
-         << " (ranking " << selecciones[0]->getRanking() << ")\n";
-    cout << "Bombo 1 (cabezas de serie):\n";
-    for (int i = 0; i < 12; i++)
-        cout << "  [" << i << "] " << selecciones[i]->getname()
-             << " (" << selecciones[i]->getConfederacion() << ")\n";
+    // // Verificacion
+    // cout << "Anfitrion confirmado en slot 0 (Grupo A): "
+    //      << selecciones[0]->getname()
+    //      << " (ranking " << selecciones[0]->getRanking() << ")\n";
+    // cout << "Bombo 1 (cabezas de serie):\n";
+    // for (int i = 0; i < 12; i++)
+    //     cout << "  [" << i << "] " << selecciones[i]->getname()
+    //          << " (" << selecciones[i]->getConfederacion() << ")\n";
 }
 
 
@@ -594,3 +756,72 @@ void torneo::imprimirGrupos() const {
     }
     cout << "\n";
 }
+
+void torneo::tamanioTorneo(){
+
+    cout << "\n+========================================================+\n";
+    cout << "|              MEMORIA TOTAL ESTIMADA                    |\n";
+    cout << "+========================================================+\n";
+
+    // Cantidades conocidas del torneo
+    const int N_SELECCIONES  = 48;
+    const int N_JUGADORES    = 48 * 26;   // 26 por seleccion
+    const int N_GRUPOS       = 12;
+    const int N_PARTIDOS_GRP = 72;        // fase de grupos
+    const int N_PARTIDOS_ELI = 32;        // 16avos+8vos+cuartos+semis+final+3erpuesto
+    const int N_FECHAS       = 1;         // una sola instancia reutilizada
+
+    size_t memSelecciones = sizeof(Selecciones) * N_SELECCIONES;
+    size_t memJugadores   = sizeof(jugadores)   * N_JUGADORES;
+    size_t memGrupos      = sizeof(Grupos)      * N_GRUPOS;
+    size_t memPartidosGrp = sizeof(Partido)     * N_PARTIDOS_GRP;
+    size_t memPartidosEli = sizeof(Partido)     * N_PARTIDOS_ELI;
+    size_t memFecha       = sizeof(Fecha)       * N_FECHAS;
+
+    size_t memTotal = memSelecciones + memJugadores + memGrupos
+                      + memPartidosGrp + memPartidosEli + memFecha;
+
+    cout << "  Selecciones  (" << N_SELECCIONES  << " obj): " << memSelecciones << " bytes\n";
+    cout << "  Jugadores    (" << N_JUGADORES    << " obj): " << memJugadores   << " bytes\n";
+    cout << "  Grupos       (" << N_GRUPOS       << " obj): " << memGrupos      << " bytes\n";
+    cout << "  Partidos GRP (" << N_PARTIDOS_GRP << " obj): " << memPartidosGrp << " bytes\n";
+    cout << "  Partidos ELI (" << N_PARTIDOS_ELI << " obj): " << memPartidosEli << " bytes\n";
+    cout << "  Fecha        (" << N_FECHAS       << " obj): " << memFecha       << " bytes\n";
+    cout << "  --------------------------------------------------\n";
+    cout << "  Total estimado : " << memTotal       << " bytes\n";
+    cout << "                   " << memTotal/1024  << " KB\n";
+    cout << "+========================================================+\n";
+
+
+    //Una captura de pantalla pesa en promedio entre 500Kb y 1Kb----eficiente
+    //adicionalmente los partidos que se hacen , nunca se hacen simultaneamente , por lo que en realidad se consume menos memoria
+    //ya que antes de simular algun partido, se libera el partido anterior, esto queda mas claro en la funcion  ImprimirReporte
+    //las clases que siempre estan en la memoria son selecciones, statsteam, fecha,jugadores,grupos, porque estas ñlas necesitaremos para al final guardar datos
+}
+void torneo::limpiarConsola() const {
+#ifdef _WIN32
+    system("cls");   // Windows
+#else
+    system("clear"); // Linux/Mac
+#endif
+}
+
+char torneo::getGrupoDeEquipo(Selecciones* e) {
+    for (int i = 0; i < 12; i++)
+        for (int j = 0; j < 4; j++)
+            if (grupo[i]->getEquipo(j) == e)
+                return 'A' + i;
+    return '?';
+}
+bool torneo::cruceValido(Selecciones* e1, Selecciones* e2) {
+    return getGrupoDeEquipo(e1) != getGrupoDeEquipo(e2);
+}
+
+void torneo::pausar(const string& mensaje) const {
+    cout << "\n  " << mensaje << " [Enter para continuar...]\n";
+    cin.ignore();
+    cin.get();
+    limpiarConsola();
+}
+
+torneo::~torneo(){Medidor::registrarDestruccion("Torneo",this);}

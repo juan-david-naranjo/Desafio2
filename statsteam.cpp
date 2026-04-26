@@ -9,6 +9,7 @@ statsteam::statsteam() {
     yellowCards  = 0;
     redCards     = 0;
     faults       = 0;
+    Medidor::registrarCreacion("StatsTeam",this);
 }
 
 statsteam::statsteam(unsigned int gf, unsigned int gc,
@@ -115,4 +116,4 @@ void statsteam::addFault()                      { faults++;         }
 
 
 
-statsteam::~statsteam() {}
+statsteam::~statsteam() {Medidor::registrarDestruccion("StatsTeam",this);}

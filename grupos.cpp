@@ -9,6 +9,7 @@ Grupos::Grupos() {
         indE1[i]   = indE2[i]   = -1;
     }
     inicializarTabla();
+    Medidor::registrarCreacion("Grupos", this);
 }
 
 Grupos::Grupos(char l, Selecciones* e1, Selecciones* e2,
@@ -119,6 +120,7 @@ int Grupos::getPuntos(int equipo) const{return this->getEntradaTabla(equipo).pun
 Selecciones* Grupos::getPrimero()          const { return tabla[0].equipo; }
 Selecciones* Grupos::getSegundo()          const { return tabla[1].equipo; }
 Selecciones* Grupos::getTercero()          const { return tabla[2].equipo; }
+EntradaTabla Grupos::getEntradaSegundo()   const { return tabla[1];        }
 EntradaTabla Grupos::getEntradaTercero()   const { return tabla[2];        }
 
 void Grupos::imprimirTabla() const {
@@ -160,4 +162,5 @@ void Grupos::setLetra(char letter) {
 
 Grupos::~Grupos() {
     // Los punteros a Selecciones son propiedad de Torneo; no se eliminan aquí
+    Medidor::registrarDestruccion("Grupos", this);
 }

@@ -9,16 +9,22 @@ Partido::Partido(Selecciones *team1,Selecciones *team2,Fecha *date) {
     porroga=false;
     stats.convocados(equipo1->convocados(),1);
     stats.convocados(equipo2->convocados(),2);
+    Medidor::registrarCreacion("Partido",this);
 }
 
 void Partido::simular(bool esEliminatoria) {
+    int Rank1=equipo1->getRanking();
+    int Rank2=equipo2->getRanking();
     if (esEliminatoria) {
         simularEliminatoria(); // La que ya tienes con prórroga
         porroga=true;
         stats.SetPartido(porroga);
+        stats.calcularPosesion(Rank1,Rank2);
+
     } else {
         simularFaseGrupos();   // La nueva versión sin prórroga
         stats.SetPartido(porroga);
+        stats.calcularPosesion(Rank1,Rank2);
     }
 }
 
@@ -297,12 +303,12 @@ void Partido::oncetitular(){
 void Partido::showpartido(){
     // Verifica que los punteros no sean nulos antes de usarlos
 
-        cout << equipo1->getname() << " vs " << equipo2->getname() << endl;
-        // cout << "DT: " << equipo1->getmanager() << " | DT: " << equipo2->getmanager() << endl;
-        // cout<<"goles equipo 1: "<<stats.getgol(1)<<endl;
-        // cout<<"posicion equipo 1: "<<stats.getgol(1)<<endl;
-        // cout<<"Titulares equipo 1"<<endl;
-        // stats.showconvocados();
+        cout << "  |                "<<equipo1->getname() << " vs " << equipo2->getname() <<"          "<< endl;
+        cout << "  |"<< "DT: " << equipo1->getmanager() << " - " <<" | DT: " << equipo2->getmanager() << endl;
+        cout << "  |"<<"goles : "<<stats.getgol(1)<<" - ";
+        cout <<"goles : "<<stats.getgol(1)<<endl;
+        cout << "  |"<<"posesion : "<<stats.getPosesion(1)<<" - ";
+        cout<< "  "<<"posesion : "<<stats.getPosesion(2)<<endl;
 
 
 }
@@ -335,6 +341,7 @@ unsigned int Partido:: getGol(unsigned int equipo) {
 
 
 Partido::~Partido(){
+    Medidor::registrarDestruccion("Partido",this);
     // delete equipo1;
     // delete equipo2;
 }

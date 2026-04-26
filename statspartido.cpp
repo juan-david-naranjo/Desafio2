@@ -9,6 +9,7 @@ statspartido::statspartido() {
         titularesE1[i] = nullptr;
         titularesE2[i] = nullptr;
     }
+    Medidor::registrarCreacion("StatsPartido",this);
 }
 
 void statspartido::show(){
@@ -48,16 +49,16 @@ void statspartido::convocados(jugadores** plantel, int equipo) {
 void statspartido::Playerstats(){
     cout<<"  |    |";
     cout<<"Equipo 1"<<endl;
-    cout<<"|------------------------------------------------------|"<<endl;
+    cout<<"  |----------------------------------------------------|"<<endl;
     for(unsigned short int i=0;i<11;i++){
 
         titularesE1[i]->showststats();
 
     }
-    cout<<"|------------------------------------------------------|"<<endl;
+    cout<<"  |----------------------------------------------------|"<<endl;
     cout<<"  |    |";
     cout<<"Equipo 2"<<endl;
-    cout<<"|------------------------------------------------------|"<<endl;
+    cout<<"  |----------------------------------------------------|"<<endl;
 
     for(unsigned short int i=0;i<11;i++){
         titularesE2[i]->showststats();
@@ -130,4 +131,5 @@ jugadores* statspartido::Getplayer(int equipo, int indice) const {
 
 statspartido::~statspartido() {
     // Los punteros son referencias a jugadores del plantel; no se eliminan aquí
+    Medidor::registrarDestruccion("StatsPartido",this);
 }

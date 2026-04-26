@@ -2,10 +2,11 @@
 #define SELECCIONES_H
 #include "jugadores.h"
 #include "statsteam.h"
-
+#include "medidor.h"
 
 class Selecciones
 {
+
     string name;
     string manager;
     int rank;
@@ -34,7 +35,7 @@ public:
     unsigned int getLose()const;
     unsigned int getDraws() const;
     jugadores** convocados();
-    string getname();
+    const string& getname()const;
     string getmanager();
     unsigned int favorGoals();
     unsigned int counterGoals();

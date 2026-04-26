@@ -60,6 +60,7 @@ public:
     Selecciones*  getPrimero()   const;
     Selecciones*  getSegundo()   const;
     Selecciones*  getTercero()   const;
+    EntradaTabla  getEntradaSegundo() const;   // para comparar Segundos entre grupos
     EntradaTabla  getEntradaTercero() const;   // para comparar terceros entre grupos
 
 

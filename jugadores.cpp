@@ -10,6 +10,7 @@ jugadores::jugadores(string nombre, string apellido,int num) {
     yellowcard=0;
     redcard=0;
     faults=0;
+    //Medidor::registrarCreacion("jugadores", this);
 }
 
 void jugadores::actualizarstats(unsigned int gol,unsigned int minutos,unsigned int amarilla,unsigned int roja, unsigned int faltas){
@@ -20,7 +21,7 @@ void jugadores::actualizarstats(unsigned int gol,unsigned int minutos,unsigned i
     faults+=faltas;
 }
 
-string jugadores::getname() const{
+const string& jugadores::getname() const{
     return name;
 }
 
@@ -49,15 +50,15 @@ void jugadores::setminutos(unsigned int minutos){
 
 void jugadores::showststats(){
     cout<<"  |    |";
-    cout<<name<<"                 ";
-    cout<<goals<<"  ";
-    cout<<minutes<<"  ";
-    cout<<yellowcard<<"  ";
+    cout<<name<<"                  ";
+    cout<<goals<<"   ";
+    cout<<minutes<<"   ";
+    cout<<yellowcard<<"   ";
     cout<<faults<<"  ";
-    cout<<redcard<<"    |\n";
+    cout<<"    | \n";
+
 
 }
-
 //++++++++++++++++++++++++++++++++++    |GETTERS|+++++++++++++++++++++++++
 unsigned int jugadores:: getamarilla(){
     return yellowcard;
@@ -70,4 +71,4 @@ unsigned int jugadores::getYellowCards() const { return yellowcard; }
 unsigned int jugadores::getRedCards()    const { return redcard;    }
 unsigned int jugadores::getFaults()      const { return faults;     }
 
-jugadores::~jugadores(){}
+jugadores::~jugadores(){Medidor::registrarDestruccion("jugadores", this);}

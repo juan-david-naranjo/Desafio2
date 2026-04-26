@@ -7,6 +7,7 @@
 #include "selecciones.h"
 #include "statspartido.h"
 #include "fecha.h"
+#include "medidor.h"
 
 
 

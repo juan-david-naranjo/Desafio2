@@ -21,7 +21,7 @@ void Medidor::imprimirReporte() {
     cout << "|           REPORTE TIEMPO DE VIDA OBJETOS               |\n";
     cout << "+========================================================+\n";
     cout << "  Clase          Direccion    Vida (ms)\n";
-    cout << "  ──────────────────────────────────────\n";
+    cout << "  -------------------------------------------------------\n";
 
     for (int i = 0; i < numEventos; i++) {
         if (!eventos[i].esCreacion) continue;
@@ -56,15 +56,15 @@ void Medidor::imprimirReporte() {
     cout << "+========================================================+\n";
 }
 
-void Medidor::medirTamanios() {
-    cout << "\n+========================================================+\n";
-    cout << "|              TAMAÑO DE OBJETOS EN MEMORIA              |\n";
-    cout << "+========================================================+\n";
-    cout << "  sizeof(Selecciones)    : " << sizeof(Selecciones)    << " bytes\n";
-    cout << "  sizeof(Grupos)         : " << sizeof(Grupos)         << " bytes\n";
-    cout << "  sizeof(Partido)        : " << sizeof(Partido)        << " bytes\n";
-    cout << "  sizeof(Fecha)          : " << sizeof(Fecha)          << " bytes\n";
-    cout << "  sizeof(EntradaTabla)   : " << sizeof(EntradaTabla)   << " bytes\n";
-    cout << "  sizeof(GestorArchivos) : " << sizeof(GestorArchivos) << " bytes\n";
-    cout << "+========================================================+\n";
-}
+// void Medidor::medirTamanios() {
+//     cout << "\n+========================================================+\n";
+//     cout << "|              TAMAÑO DE OBJETOS EN MEMORIA              |\n";
+//     cout << "+========================================================+\n";
+//     cout << "  sizeof(Selecciones)    : " << sizeof(Selecciones)    << " bytes\n";
+//     cout << "  sizeof(Grupos)         : " << sizeof(Grupos)         << " bytes\n";
+//     cout << "  sizeof(Partido)        : " << sizeof(Partido)        << " bytes\n";
+//     cout << "  sizeof(Fecha)          : " << sizeof(Fecha)          << " bytes\n";
+//     cout << "  sizeof(EntradaTabla)   : " << sizeof(EntradaTabla)   << " bytes\n";
+//     cout << "  sizeof(GestorArchivos) : " << sizeof(GestorArchivos) << " bytes\n";
+//     cout << "+========================================================+\n";
+// }

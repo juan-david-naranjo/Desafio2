@@ -1,6 +1,7 @@
 #ifndef GESTORARCHIVOS_H
 #define GESTORARCHIVOS_H
 #include "selecciones.h"
+#include "medidor.h"
 #include <fstream>
 
 class GestorArchivos {
