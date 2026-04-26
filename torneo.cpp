@@ -30,6 +30,9 @@ void torneo::simularTorneo(){
     simularFaseGrupos();
     pausar("Fase de grupos completada.");
     simularDieciseisavos();
+    guardarDatos();
+    pausar("Pasar a Medidas de Eficiencia");
+
 
 }
 
@@ -180,6 +183,8 @@ void torneo::simularDieciseisavos() {
     }
     cout << "+========================================================+\n";
 
+
+
     // 5. Armar 16 cruces con backtracking  Condicion faltante
     // Regla 1: primeros[0..7]  vs terceros[0..7]  (8 partidos)
     // Regla 2: primeros[8..11] vs peores segundos[8..11] (4 partidos)
@@ -281,12 +286,23 @@ void torneo::simularDieciseisavos() {
             }
         }
     }
+    //auxiliar para mostrar confederacion con mas representantes
+    Selecciones* clasificados16[32];
+    for (int i = 0; i < 16; i++) {
+        clasificados16[i]      = E1s[i];
+        clasificados16[i + 16] = E2s[i];
+    }
+
+
 
     cout << "\n+========================================================+\n";
     cout << "|            DIECISEISAVOS DE FINAL                      |\n";
     cout << "+========================================================+\n";
+    ConfMasEquipos(clasificados16, 32, "16avos");
+
     Selecciones* ganadores[16];
     Fecha* fechas = new Fecha(2026, 7, 1);
+
 
     for (int i = 0; i < 16; i++) {
         Selecciones* E1 = E1s[i];
@@ -331,9 +347,11 @@ void torneo::simularoctavos(Selecciones** ganadores16) {
     Fecha* fecha = new Fecha(2026, 7, 10);
     Selecciones* ganadores8[8];
 
+
     cout << "\n+========================================================+\n";
     cout << "|                 OCTAVOS DE FINAL                       |\n";
     cout << "+========================================================+\n";
+    ConfMasEquipos(ganadores16,16, "8avos");
 
     for (int i = 0; i < NUM_PARTIDOS; i++) {
         Selecciones* E1 = ganadores16[i * 2];
@@ -361,6 +379,7 @@ void torneo::simularoctavos(Selecciones** ganadores16) {
 }
 
 void torneo::simularCuartos(Selecciones** ganadores8) {
+
     const int NUM_PARTIDOS = 4;
     Fecha* fecha = new Fecha(2026, 7, 18);
     Selecciones* ganadores4[4];
@@ -368,6 +387,7 @@ void torneo::simularCuartos(Selecciones** ganadores8) {
     cout << "\n+========================================================+\n";
     cout << "|                 CUARTOS DE FINAL                       |\n";
     cout << "+========================================================+\n";
+    ConfMasEquipos(ganadores8, 8, "4tos");
 
     for (int i = 0; i < NUM_PARTIDOS; i++) {
         Selecciones* E1 = ganadores8[i * 2];
@@ -381,8 +401,6 @@ void torneo::simularCuartos(Selecciones** ganadores8) {
         string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
         cout << "  | " << nom1 << " vs " << nom2
              << " =>  " << ganadores4[i]->getname() << "\n";
-        cout << "  | " << nom1 << " vs " << nom2
-             << " =>  " << ganadores8[i]->getname() << "\n";
         cout << "  |----------------Stats del Partido------------------------- \n";
         // Llamada al metodo existente para stats completos
         cout << "  |--------------------------------------------------------+\n";
@@ -419,7 +437,7 @@ void torneo::simularSemis(Selecciones** ganadores4) {
         string nom1 = E1->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
         string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
         cout << "  | " << nom1 << " vs " << nom2
-             << " =>  " << ganadores4[i]->getname() << "\n";
+             << " =>  " << ganadores2[i]->getname() << "\n";
 
         cout << "  |----------------Stats del Partido------------------------- \n";
         // Llamada al metodo existente para stats completos
@@ -492,6 +510,9 @@ void torneo::simularFinal(Selecciones** ganadores2) {
     while ((int)camp.size() < 31) camp += ' ';
     cout << camp << "|\n";
     cout << "+========================================================+\n";
+    pausar("Pasar a Datos del Torneo");
+    GoleadorCampeon(campeon);
+    MaximoGoleadores();
 
     delete fecha;
 }
@@ -798,6 +819,98 @@ void torneo::tamanioTorneo(){
     //ya que antes de simular algun partido, se libera el partido anterior, esto queda mas claro en la funcion  ImprimirReporte
     //las clases que siempre estan en la memoria son selecciones, statsteam, fecha,jugadores,grupos, porque estas ñlas necesitaremos para al final guardar datos
 }
+
+void torneo::GoleadorCampeon(Selecciones* campeon) const {
+    jugadores* goleador = campeon->getGoleador();
+
+    cout << "\n+========================================================+\n";
+    cout << "|         MAXIMO GOLEADOR DE LA SELECCION CAMPEON        |\n";
+    cout << "+========================================================+\n";
+    cout << "  Seleccion : " << campeon->getname()    << "\n";
+    cout << "  Jugador   : " << goleador->getname()   << "\n";
+    cout << "  Goles     : " << goleador->getGoals()  << "\n";
+    cout << "+========================================================+\n";
+}
+
+
+void torneo::MaximoGoleadores()const{
+    jugadores* top3[3]={nullptr,nullptr,nullptr};
+    Selecciones* selectop3[3]={nullptr,nullptr,nullptr};
+    //Iteramos sobre cada seleccion y luego sobre cada jugador para hallar maximo goleador
+    for (int s = 0; s < 48; s++) {
+        for (int j = 0; j < 26; j++) {
+            jugadores* jug = selecciones[s]->getPlayer(j);
+            if (jug == nullptr) continue;
+
+            unsigned int goles = jug->getGoals(); // ajusta al getter real
+
+            // Ver si entra en el top 3
+            for (int t = 0; t < 3; t++) {
+                if (top3[t] == nullptr || goles > top3[t]->getGoals()) {
+
+                    // Desplazar hacia abajo
+                    for (int k = 2; k > t; k--){
+                        selectop3[k]=selecciones[k-1];
+                        top3[k] = top3[k - 1];
+                    }
+                    top3[t] = jug;
+                    selectop3[t]=selecciones[s];
+                    break;
+                }
+            }
+        }
+    }
+    cout << "\n+========================================================+\n";
+    cout << "|              MAXIMOS GOLEADORES DEL TORNEO             |\n";
+    cout << "+========================================================+\n";
+    for (int i = 0; i < 3; i++) {
+        if (top3[i] == nullptr) continue;
+
+        cout << "  " << (i+1) << ". " << top3[i]->getname()
+             << " - " << top3[i]->getGoals() << " goles  ";
+        cout<<"Seleccion: "<<selectop3[i]->getname()<<endl;
+    }
+    cout << "+========================================================+\n";
+}
+
+void torneo::ConfMasEquipos(Selecciones** equipos, int cantidad, const string& fase) const {
+    string confConteo[10];
+    int    conteos[10] = {0};
+    int    numConfs    = 0;
+
+    for (int i = 0; i < cantidad; i++) {
+        string conf = equipos[i]->getConfederacion();
+        bool encontrado = false;
+        for (int j = 0; j < numConfs; j++) {
+            if (confConteo[j] == conf) {
+                conteos[j]++;
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
+            confConteo[numConfs] = conf;
+            conteos[numConfs]    = 1;
+            numConfs++;
+        }
+    }
+
+    int maxIdx = 0;
+    for (int i = 1; i < numConfs; i++)
+        if (conteos[i] > conteos[maxIdx]) maxIdx = i;
+
+    cout << "\n  Confederacion con mas equipos en " << fase << ": "
+         << confConteo[maxIdx] << " (" << conteos[maxIdx] << " equipos)\n";
+    cout<<"\n";
+
+    // Imprimir todas por si quieres verlas todas
+    // for (int i = 0; i < numConfs; i++)
+    //     cout << "    " << confConteo[i] << ": " << conteos[i] << " equipos\n";
+}
+
+
+
+
 void torneo::limpiarConsola() const {
 #ifdef _WIN32
     system("cls");   // Windows

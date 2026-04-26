@@ -20,15 +20,16 @@ int main()
     string Registroplayers="Registro_jugadores";
     torneo Mundial_2026;
     Mundial_2026.cargarDatos(seleccion,Registroplayers);
-    Mundial_2026.simularFaseGrupos();
-    Mundial_2026.simularDieciseisavos();
-
-    Mundial_2026.guardarDatos();
+    Mundial_2026.simularTorneo();
+    // Mundial_2026.simularFaseGrupos();
+    // Mundial_2026.simularDieciseisavos();
+    // Mundial_2026.MaximoGoleadores();
+    // Mundial_2026.guardarDatos();
     Mundial_2026.tamanioTorneo();
     Medidor::imprimirReporte();
 
 
-    cout<<"Hola mundo"<<endl;
+
     // cout<<"problema"<<endl;
     return 0;
 }

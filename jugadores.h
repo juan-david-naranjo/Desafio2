@@ -30,7 +30,7 @@ public:
     // Getters para GestorArchivos
     unsigned int getamarilla();
     unsigned int getShirt()       const;
-    unsigned int getGoals()       const;
+    const unsigned int &getGoals()       const;
     unsigned int getMinutes()     const;
     unsigned int getYellowCards() const;
     unsigned int getRedCards()    const;

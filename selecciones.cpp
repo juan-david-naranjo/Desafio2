@@ -89,7 +89,19 @@ int Selecciones::getRanking()const{
     return rank;
 }
 
-string Selecciones::getConfederacion() const { return conf; }
+
+
+const string& Selecciones::getConfederacion() const { return conf; }
+
+jugadores* Selecciones::getGoleador() const {
+    jugadores* max = players[0];
+    for (int i = 1; i < 26; i++) {
+        if (players[i] == nullptr) continue;
+        if (players[i]->getGoals() > max->getGoals())
+            max = players[i];
+    }
+    return max;
+}
 
 jugadores* Selecciones::getPlayer(int i) const {
     if (i < 0 || i > 25) return nullptr;

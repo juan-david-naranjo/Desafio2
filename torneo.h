@@ -47,12 +47,15 @@ public:
 
     void prepararSorteo();
 
+    void ConfMasEquipos(Selecciones** equipos, int cantidad, const string& fase) const;
     void tamanioTorneo();
     void imprimirGrupos() const;
     void limpiarConsola() const;
     void pausar(const string& mensaje) const;
+    void MaximoGoleadores()const;
     char getGrupoDeEquipo(Selecciones* e);
     bool cruceValido(Selecciones* e1, Selecciones* e2);
+    void GoleadorCampeon(Selecciones* campeon) const;
 
     ~torneo();
 

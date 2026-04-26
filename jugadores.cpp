@@ -65,7 +65,7 @@ unsigned int jugadores:: getamarilla(){
 }
 
 unsigned int jugadores::getShirt()       const { return shirt;      }
-unsigned int jugadores::getGoals()       const { return goals;      }
+const unsigned int& jugadores::getGoals()       const { return goals;      }
 unsigned int jugadores::getMinutes()     const { return minutes;    }
 unsigned int jugadores::getYellowCards() const { return yellowcard; }
 unsigned int jugadores::getRedCards()    const { return redcard;    }

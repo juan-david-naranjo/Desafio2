@@ -40,10 +40,11 @@ public:
     unsigned int favorGoals();
     unsigned int counterGoals();
     int getRanking()const;
-    string getConfederacion()     const;
+    const string& getConfederacion()     const;
     string getfederacion()     const;       //falto por colocar la federacion
     jugadores* getPlayer(int i)   const;
     jugadores* getPlayerByShirt(int n) const;
+    jugadores* getGoleador() const;
 
     ~Selecciones(); //destructor
 };

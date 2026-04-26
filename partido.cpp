@@ -306,7 +306,7 @@ void Partido::showpartido(){
         cout << "  |                "<<equipo1->getname() << " vs " << equipo2->getname() <<"          "<< endl;
         cout << "  |"<< "DT: " << equipo1->getmanager() << " - " <<" | DT: " << equipo2->getmanager() << endl;
         cout << "  |"<<"goles : "<<stats.getgol(1)<<" - ";
-        cout <<"goles : "<<stats.getgol(1)<<endl;
+        cout <<"goles : "<<stats.getgol(2)<<endl;
         cout << "  |"<<"posesion : "<<stats.getPosesion(1)<<" - ";
         cout<< "  "<<"posesion : "<<stats.getPosesion(2)<<endl;
 
