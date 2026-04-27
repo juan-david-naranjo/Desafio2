@@ -3,20 +3,21 @@
 #include <iostream>
 using namespace std;
 
-Medidor::Evento Medidor::eventos[500];
+Medidor::Evento Medidor::eventos[600];
 int             Medidor::numEventos = 0;
 
 void Medidor::registrarCreacion(const string& clase, const void* direccion) {
-    if (numEventos >= 500) return;
+    if (numEventos >= 600) return;
     eventos[numEventos++] = { clase, direccion, clock(), true };
 }
 
 void Medidor::registrarDestruccion(const string& clase, const void* direccion) {
-    if (numEventos >= 500) return;
+    if (numEventos >= 600) return;
     eventos[numEventos++] = { clase, direccion, clock(), false };
 }
 
 void Medidor::imprimirReporte() {
+    cout << "Total eventos registrados: " << numEventos << "\n";
     cout << "\n+========================================================+\n";
     cout << "|           REPORTE TIEMPO DE VIDA OBJETOS               |\n";
     cout << "+========================================================+\n";

@@ -10,7 +10,7 @@ jugadores::jugadores(string nombre, string apellido,int num) {
     yellowcard=0;
     redcard=0;
     faults=0;
-    //Medidor::registrarCreacion("jugadores", this);
+    // Medidor::registrarCreacion("jugadores", this);
 }
 
 void jugadores::actualizarstats(unsigned int gol,unsigned int minutos,unsigned int amarilla,unsigned int roja, unsigned int faltas){
@@ -71,4 +71,4 @@ unsigned int jugadores::getYellowCards() const { return yellowcard; }
 unsigned int jugadores::getRedCards()    const { return redcard;    }
 unsigned int jugadores::getFaults()      const { return faults;     }
 
-jugadores::~jugadores(){Medidor::registrarDestruccion("jugadores", this);}
+jugadores::~jugadores(){/*Medidor::registrarDestruccion("jugadores", this);*/}

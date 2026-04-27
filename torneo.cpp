@@ -31,7 +31,7 @@ void torneo::simularTorneo(){
     pausar("Fase de grupos completada.");
     simularDieciseisavos();
     guardarDatos();
-    pausar("Pasar a Medidas de Eficiencia");
+
 
 
 }
@@ -47,7 +47,7 @@ void torneo::simularFaseGrupos() {
     int fixtures[6][2] = {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
     const int TOTAL_PARTIDOS = 72;
 
-    Partido* todosLosPartidos[TOTAL_PARTIDOS];
+    Partido* todosLosPartidos[TOTAL_PARTIDOS];      //necesario para tener los partidos ordenados3
     Fecha* fechas = new Fecha(2026, 6, 20);
 
     int idx = 0;
@@ -84,26 +84,32 @@ void torneo::simularFaseGrupos() {
                  << nom1 << "  " << E1gol << " - " << E2gol
                  << "  " << nom2<<endl;
 
-
-
-            // // Mostrar los 11 titulares de cada equipo con sus stats
-            // // usando un formato de tabla ASCII compacto
-            // cout << "  |    | # Jugador                Goles  Min  Amar  Falt |\n";
-            // cout << "  |    +--------------------------------------------------+\n";
-            //     // Como showstats() imprime en su propio formato, lo llamamos
-            //     // y avisamos al usuario:
-            // // Llamada al metodo existente para stats completos
-            // cout << "  |    +--------------------------------------------------+\n";
-            // p->showstats();
             cout << "  |----------------------------------------------------------+\n";
             p->showpartido();
+
+
             cout << "  |\n";
         }
         cout << "  +------------------------------------------------------+\n";
         fechas->avanzarDia();
     }
 
-    for (int i = 0; i < TOTAL_PARTIDOS; i++) delete todosLosPartidos[i];
+
+    for (int i = 0; i < TOTAL_PARTIDOS; i++) {
+        if (todosLosPartidos[i] != nullptr) {
+            delete todosLosPartidos[i];
+            todosLosPartidos[i] = nullptr;
+        }
+    }
+    // for (int i = 0; i < TOTAL_PARTIDOS; i++) {
+    //     if (todosLosPartidos[i] != nullptr) {
+    //         cout << "PARTIDO NO JUGADO idx=" << i
+    //              << " gp=" << i/6 << " f=" << i%6
+    //              << " " << (todosLosPartidos[i]->getEquipo(1))->getname()
+    //              << " vs " << (todosLosPartidos[i]->getEquipo(2))->getname()
+    //              << endl;
+    //     }
+    // }
     delete fechas;
 
     for (unsigned int i = 0; i < 12; i++) grupo[i]->generarTabla();
@@ -302,21 +308,6 @@ void torneo::simularDieciseisavos() {
         Partido* p = new Partido(E1, E2, fechas);
         p->simular(true);
         ganadores[i] = p->getGanador();
-        // int E1gol=p->getGol(1);
-        // int E2gol=p->getGol(2);
-
-        // string nom1 = E1->getname(); while ((int)nom1.size() < 10) nom1 += ' ';
-        // string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-        // cout<< nom1 << "  " << E1gol << " - " << E2gol
-        //      << "  " << nom2<<endl;
-
-
-        // // Mostrar los 11 titulares de cada equipo con sus stats
-        // // usando un formato de tabla ASCII compacto
-        // cout << "  |    | # Jugador                Goles  Min  Amar  Falt |\n";
-        // cout << "  |    +--------------------------------------------------+\n";
-
-        // Llamada al metodo existente para stats completos
         cout << "  |-----------------------------------------------------+\n";
         p->showpartido();
         cout << "  |\n";
@@ -347,17 +338,10 @@ void torneo::simularoctavos(Selecciones** ganadores16) {
         Partido* partido = new Partido(E1, E2, fecha);
         partido->simular(true);
         ganadores8[i] = partido->getGanador();
-        delete partido;
 
-        // string nom1 = E1->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
-        // string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-        // cout << "  | " << nom1 << " vs " << nom2
-        //      << " =>  " << ganadores8[i]->getname() << "\n";
-        //  cout << "  |----------------Stats del Partido------------------------- \n";
-        // // Llamada al metodo existente para stats completos
         cout << "  |--------------------------------------------------------+\n";
         partido->showpartido();
-
+        delete partido;
     }
     cout << "+========================================================+\n";
 
@@ -383,16 +367,10 @@ void torneo::simularCuartos(Selecciones** ganadores8) {
         Partido* partido = new Partido(E1, E2, fecha);
         partido->simular(true);
         ganadores4[i] = partido->getGanador();
-        delete partido;
 
-        // string nom1 = E1->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
-        // string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-        // cout << "  | " << nom1 << " vs " << nom2
-        //      << " =>  " << ganadores4[i]->getname() << "\n";
-        // cout << "  |----------------Stats del Partido------------------------- \n";
-        // Llamada al metodo existente para stats completos
         cout << "  |--------------------------------------------------------+\n";
         partido->showpartido();
+        delete partido;
 
     }
     cout << "+========================================================+\n";
@@ -419,18 +397,10 @@ void torneo::simularSemis(Selecciones** ganadores4) {
         partido->simular(true);
         ganadores2[i]  = partido->getGanador();
         perdedores2[i] = (ganadores2[i] == E1) ? E2 : E1;
-        delete partido;
-
-        // string nom1 = E1->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
-        // string nom2 = E2->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-        // cout << "  | " << nom1 << " vs " << nom2
-        //      << " =>  " << ganadores2[i]->getname() << "\n";
-
-        // cout << "  |----------------Stats del Partido------------------------- \n";
-        // Llamada al metodo existente para stats completos
         cout << "  |--------------------------------------------------------+\n";
         partido->showpartido();
         cout << "  |\n";
+        delete partido;
 
     }
     cout << "+========================================================+\n";
@@ -452,19 +422,14 @@ void torneo::simularTercerPuesto(Selecciones** perdedores2) {
     Partido* partido = new Partido(perdedores2[0], perdedores2[1], fecha);
     partido->simular(true);
     Selecciones* tercero = partido->getGanador();
-    delete partido;
 
-    // string nom1 = perdedores2[0]->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
-    // string nom2 = perdedores2[1]->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-    // cout << "  | " << nom1 << " vs " << nom2
-    //      << " =>  " << tercero->getname() << "\n";
-    // cout << "  |----------------Stats del Partido------------------------- \n";
-    // Llamada al metodo existente para stats completos
+
     cout << "  |--------------------------------------------------------+\n";
     partido->showpartido();
     cout << "  |\n";
     cout << "  |  3er Puesto: " << tercero->getname() << "\n";
     cout << "+========================================================+\n";
+    delete partido;
 
     delete fecha;
 }
@@ -479,17 +444,10 @@ void torneo::simularFinal(Selecciones** ganadores2) {
     Partido* partido = new Partido(ganadores2[0], ganadores2[1], fecha);
     partido->simular(true);
     Selecciones* campeon = partido->getGanador();
-    delete partido;
 
-    // string nom1 = ganadores2[0]->getname(); while ((int)nom1.size() < 20) nom1 += ' ';
-    // string nom2 = ganadores2[1]->getname(); while ((int)nom2.size() < 20) nom2 += ' ';
-    // cout << "  | " << nom1 << " vs " << nom2
-    //      << " =>  " << campeon->getname() << "\n";
-
-    // cout << "  |----------------Stats del Partido------------------------- \n";
-    // Llamada al metodo existente para stats completos
     cout << "  |--------------------------------------------------------+\n";
     partido->showpartido();
+    delete partido;
     cout << "  |\n";
     cout << "+========================================================+\n";
     cout << "|  CAMPEON DEL MUNDO 2026: ";
@@ -924,4 +882,15 @@ void torneo::pausar(const string& mensaje) const {
     limpiarConsola();
 }
 
-torneo::~torneo(){Medidor::registrarDestruccion("Torneo",this);}
+torneo::~torneo(){
+    //las selecciones fueron creadas usando new, las eliminamos al final
+    for (int i = 0; i < 48; i++) {
+        if (selecciones[i] != nullptr) {
+            delete selecciones[i];
+            selecciones[i] = nullptr;
+        }
+    }
+
+    Medidor::registrarDestruccion("Torneo", this);
+    Medidor::imprimirReporte();
+}

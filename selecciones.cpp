@@ -130,7 +130,7 @@ void Selecciones::showstats(){
 Selecciones::~Selecciones(){
     for (int i = 0; i < 26; ++i) {
     delete players[i];
-        Medidor::registrarDestruccion("Partido",players[i]);
+        // Medidor::registrarDestruccion("Partido",players[i]);
     }
     Medidor::registrarDestruccion("Selecciones",this);
 }

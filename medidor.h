@@ -22,7 +22,7 @@ private:
         bool        esCreacion; // true=creacion, false=destruccion
     };
 
-    static Evento eventos[500];
+    static Evento eventos[600];
     static int    numEventos;
 };
 #endif
