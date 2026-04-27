@@ -892,5 +892,5 @@ torneo::~torneo(){
     }
 
     Medidor::registrarDestruccion("Torneo", this);
-    Medidor::imprimirReporte();
+    // Medidor::imprimirReporte();
 }
